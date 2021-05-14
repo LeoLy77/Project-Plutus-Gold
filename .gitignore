@@ -348,3 +348,24 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+######################
+# CUSTOM IGNORES HERE#
+######################
+
+#exclude everything except directory foo/bar
+.DS_Store
+temp*
+*.code-workspace
+.vscode/
+safe_keeper.c
+zephyrproject/.DS_Store
+#directory/
+build/
+bootloader/
+modules/
+tools/
+zephyr/
+#wildcards
+*.log
+
