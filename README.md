@@ -1,8 +1,8 @@
 # Project-Plutus-Gold
-This is the project wiki of team Plutus Gold
+This is the project wiki of team Plutus Gold.
 
 This is Leo's test commit
-
+This is Jimmy's test commit
 
 <!--
 *** Thanks for checking out the Best-README-Template. If you have a suggestion
