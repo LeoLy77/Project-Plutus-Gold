@@ -27,8 +27,11 @@
 #include <bluetooth/conn.h>
 #include <bluetooth/uuid.h>
 #include <bluetooth/gatt.h>
-#include <bluetooth/services/bas.h>
-#include <bluetooth/services/hrs.h>
+// #include <bluetooth/services/bas.h>
+// #include <bluetooth/services/hrs.h>
+
+#include "s4433912_os_bt_share.h"
+#include "s4433912_os_bt.h"
 
 static const struct bt_data ad[] = {
 	BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
@@ -85,21 +88,7 @@ static struct bt_conn_auth_cb auth_cb_display = {
 	.cancel = auth_cancel,
 };
 
-static void bas_notify(void)
-{
-	uint8_t battery_level = bt_bas_get_battery_level();
-
-	battery_level--;
-
-	if (!battery_level) {
-		battery_level = 100U;
-	}
-
-	bt_bas_set_battery_level(battery_level);
-}
-
-static void hrs_notify(void)
-{
+static void notify(void) {
 	static uint8_t heartrate = 90U;
 
 	/* Heartrate measurements simulation */
@@ -108,7 +97,7 @@ static void hrs_notify(void)
 		heartrate = 90U;
 	}
 
-	bt_hrs_notify(heartrate);
+	pv_bt_notify(heartrate);
 }
 
 
@@ -150,11 +139,7 @@ void main(void) {
 	while (1) {
 		k_sleep(K_SECONDS(1));
 
-		/* Heartrate measurements simulation */
-		hrs_notify();
-
-		/* Battery level simulation */
-		bas_notify();
+		notify();
 	}
 
 }

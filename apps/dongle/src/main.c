@@ -26,6 +26,8 @@
 #include <bluetooth/gatt.h>
 #include <sys/byteorder.h>
 
+#include "s4433912_os_bt_share.h"
+
 static void start_scan(void);
 
 static struct bt_conn *default_conn;
@@ -36,23 +38,25 @@ static struct bt_gatt_subscribe_params subscribe_params;
 
 static uint8_t notify_func(struct bt_conn *conn,
 			   struct bt_gatt_subscribe_params *params,
-			   const void *data, uint16_t length)
-{
-	if (!data) {
+			   const void *raw_data, uint16_t length) {
+	if (!raw_data) {
 		printk("[UNSUBSCRIBED]\n");
 		params->value_handle = 0U;
 		return BT_GATT_ITER_STOP;
 	}
-
-	printk("[NOTIFICATION] data %p length %u\n", data, length);
+	uint8_t* data = (uint8_t*) raw_data;
+	printk("[NOTIFICATION]");// data %p length %u\n", data, length);
+	for (int i = 0; i < length; i++) {
+		printk("%X ", data[i]);
+	}
+	printk("\n");
 
 	return BT_GATT_ITER_CONTINUE;
 }
 
 static uint8_t discover_func(struct bt_conn *conn,
 			     const struct bt_gatt_attr *attr,
-			     struct bt_gatt_discover_params *params)
-{
+			     struct bt_gatt_discover_params *params) {
 	int err;
 
 	if (!attr) {
@@ -64,6 +68,7 @@ static uint8_t discover_func(struct bt_conn *conn,
 	printk("[ATTRIBUTE] handle %u\n", attr->handle);
 
 	if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_HRS)) {
+
 		memcpy(&uuid, BT_UUID_HRS_MEASUREMENT, sizeof(uuid));
 		discover_params.uuid = &uuid.uuid;
 		discover_params.start_handle = attr->handle + 1;
@@ -73,8 +78,8 @@ static uint8_t discover_func(struct bt_conn *conn,
 		if (err) {
 			printk("Discover failed (err %d)\n", err);
 		}
-	} else if (!bt_uuid_cmp(discover_params.uuid,
-				BT_UUID_HRS_MEASUREMENT)) {
+	} else if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_HRS_MEASUREMENT)) {
+
 		memcpy(&uuid, BT_UUID_GATT_CCC, sizeof(uuid));
 		discover_params.uuid = &uuid.uuid;
 		discover_params.start_handle = attr->handle + 2;
@@ -86,6 +91,7 @@ static uint8_t discover_func(struct bt_conn *conn,
 			printk("Discover failed (err %d)\n", err);
 		}
 	} else {
+
 		subscribe_params.notify = notify_func;
 		subscribe_params.value = BT_GATT_CCC_NOTIFY;
 		subscribe_params.ccc_handle = attr->handle;
@@ -103,8 +109,7 @@ static uint8_t discover_func(struct bt_conn *conn,
 	return BT_GATT_ITER_STOP;
 }
 
-static bool eir_found(struct bt_data *data, void *user_data)
-{
+static bool eir_found(struct bt_data *data, void *user_data) {
 	bt_addr_le_t *addr = user_data;
 	int i;
 
@@ -167,8 +172,7 @@ static void device_found(const bt_addr_le_t *addr, int8_t rssi, uint8_t type,
 	}
 }
 
-static void start_scan(void)
-{
+static void start_scan(void) {
 	int err;
 
 	/* Use active scanning and disable duplicate filtering to handle any
@@ -189,8 +193,7 @@ static void start_scan(void)
 	printk("Scanning successfully started\n");
 }
 
-static void connected(struct bt_conn *conn, uint8_t conn_err)
-{
+static void connected(struct bt_conn *conn, uint8_t conn_err) {
 	char addr[BT_ADDR_LE_STR_LEN];
 	int err;
 
