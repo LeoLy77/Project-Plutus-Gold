@@ -10,12 +10,19 @@
 
 *************************************************************** */
 
-#ifndef S4433912_OS_BT_SHARE_H
-#define S4433912_OS_BT_SHARE_H
+#ifndef AHU_BT_H
+#define AHU_BT_H
 
-#define DATA_SIZE   12
+#include <bluetooth/bluetooth.h>
+#include <bluetooth/hci.h>
+#include <bluetooth/conn.h>
+#include <bluetooth/uuid.h>
+#include <bluetooth/gatt.h>
+#include <sys/byteorder.h>
+#include <string.h>
+#include <zephyr/types.h>
 
-#define BT_UUID_PRV_VAL 0xBBA9
-#define BT_UUID_PRV BT_UUID_DECLARE_16(BT_UUID_PRV_VAL)
+#include "s4433912_os_bt_share.h"
+
 
 #endif

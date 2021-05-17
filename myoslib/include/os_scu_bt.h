@@ -10,8 +10,8 @@
 
 *************************************************************** */
 
-#ifndef S4433912_OS_BT_H
-#define S4433912_OS_BT_H
+#ifndef PRO_OS_SCU_BT_H
+#define PRO_OS_SCU_BT_H
 
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/hci.h>
@@ -21,10 +21,12 @@
 #include <sys/byteorder.h>
 #include <string.h>
 #include <zephyr/types.h>
-#include <data/json.h>
 
 #include "s4433912_os_bt_share.h"
 
-int pv_bt_notify(uint16_t heartrate);
+extern struct bt_conn_cb conn_callbacks;
+extern struct bt_conn_auth_cb auth_cb_display;
+
+int send_notification(uint8_t* data, uint8_t length);
 
 #endif

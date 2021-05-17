@@ -45,7 +45,7 @@ static uint8_t notify_func(struct bt_conn *conn,
 		return BT_GATT_ITER_STOP;
 	}
 	uint8_t* data = (uint8_t*) raw_data;
-	printk("[NOTIFICATION]");// data %p length %u\n", data, length);
+	printk("[NOTIFICATION]");
 	for (int i = 0; i < length; i++) {
 		printk("%X ", data[i]);
 	}
@@ -67,7 +67,7 @@ static uint8_t discover_func(struct bt_conn *conn,
 
 	printk("[ATTRIBUTE] handle %u\n", attr->handle);
 
-	if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_HRS)) {
+	if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_PRV)) {
 
 		memcpy(&uuid, BT_UUID_HRS_MEASUREMENT, sizeof(uuid));
 		discover_params.uuid = &uuid.uuid;
@@ -131,7 +131,7 @@ static bool eir_found(struct bt_data *data, void *user_data) {
 
 			memcpy(&u16, &data->data[i], sizeof(u16));
 			uuid = BT_UUID_DECLARE_16(sys_le16_to_cpu(u16));
-			if (bt_uuid_cmp(uuid, BT_UUID_HRS)) {
+			if (bt_uuid_cmp(uuid, BT_UUID_PRV)) {
 				continue;
 			}
 
@@ -212,7 +212,7 @@ static void connected(struct bt_conn *conn, uint8_t conn_err) {
 	printk("Connected: %s\n", addr);
 
 	if (conn == default_conn) {
-		memcpy(&uuid, BT_UUID_HRS, sizeof(uuid));
+		memcpy(&uuid, BT_UUID_PRV, sizeof(uuid));
 		discover_params.uuid = &uuid.uuid;
 		discover_params.func = discover_func;
 		discover_params.start_handle = 0x0001;
