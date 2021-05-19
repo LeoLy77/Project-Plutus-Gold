@@ -13,14 +13,22 @@ class fObject:
         self.y = y
         self.neigh = NearestNeighbors(n_neighbors=1)
     
-    def update_pos2closest(self, pos_list):
+    def update_pos2closest(self, pos_list, dstn_lim=0.5):
+        """
+        Finds the closest position in the list and update the current position\n
+        Remains if the closest is too far
+        """
         self.neigh.fit(pos_list)
-        ret = self.neigh.kneighbors(np.array([self.x, self.y]).reshape(-1, 2), return_distance=False)
-        new_pos_index = ret[0][0]
+        ret = self.neigh.kneighbors(np.array([self.x, self.y]).reshape(-1, 2), return_distance=True)
+        dist = ret[0][0][0]
+        if dist >= dstn_lim: #no update if distance is large
+            return self.x, self.y
+        new_pos_index = ret[1][0][0]
         x, y = pos_list[new_pos_index]
         self.x = x
         self.y = y
-        print("New position = ({a}, {b})".format(a=self.x, b=self.y))
+        # print("New position = ({a}, {b})".format(a=self.x, b=self.y))
+        return x, y
 
 class Cluster:
     def __init__(self, X) -> None:
@@ -176,7 +184,13 @@ if __name__ == "__main__":
     # plt.show()
 
     #test moving object
+    _, axs = plt.subplots(1, 1)
     o = fObject(1,1)
+    o1 = fObject(-1,-1)
     for i in range(10):
         grp = X[i*10 : i*10+10]
-        o.update_pos2closest(grp)
+        x, y = o.update_pos2closest(grp)
+        axs.scatter(x, y, c="red")
+        x, y = o1.update_pos2closest(grp)
+        axs.scatter(x, y, c="blue")
+    plt.show()
