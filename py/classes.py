@@ -1,5 +1,4 @@
 import numpy as np
-
 from sklearn.cluster import DBSCAN
 from sklearn import metrics
 from sklearn.datasets import make_blobs
@@ -24,6 +23,18 @@ class Cluster:
         for i, cluster in enumerate(labels):
             self.cluster_res[cluster].append(X[i])
 
+    def get_centers(self):
+        """
+        """
+        res = []
+        for key in self.cluster_res:
+            if key == -1:
+                continue #outliers
+            split = list(zip(*self.cluster_res[key]))
+            Xs = split[0]
+            Ys = split[-1]
+            res.append((np.mean(Xs), np.mean(Ys)))
+        return res
 
     def print_stuff(self):
         for key in self.cluster_res:
@@ -41,7 +52,6 @@ class Cluster:
         # print("Silhouette Coefficient: %0.3f"
         #     % metrics.silhouette_score(X, labels))
 
-    # #############################################################################
     # Plot result
     def plot(self):
         core_samples_mask = np.zeros_like(self.labels, dtype=bool)
@@ -66,10 +76,8 @@ class Cluster:
                     markeredgecolor='k', markersize=6)
 
         plt.title('Estimated number of clusters: %d' % self.n_clusters_)
-        plt.show()
 
 if __name__ == "__main__":
-    # #############################################################################
     # Generate sample data
     centers = [[1, 1], [-1, -1], [1, -1]]
     X, labels_true = make_blobs(n_samples=100, centers=centers, cluster_std=0.1,
@@ -77,3 +85,6 @@ if __name__ == "__main__":
 
     cluster = Cluster(X)
     cluster.plot()
+    print(cluster.get_centers())
+
+    plt.show()
