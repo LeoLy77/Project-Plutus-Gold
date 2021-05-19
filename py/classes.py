@@ -3,7 +3,24 @@ from sklearn.cluster import DBSCAN
 from sklearn import metrics
 from sklearn.datasets import make_blobs
 from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import NearestNeighbors
 import matplotlib.pyplot as plt
+from numpy.linalg import inv
+
+class fObject:
+    def __init__(self, x, y) -> None:
+        self.x = x
+        self.y = y
+        self.neigh = NearestNeighbors(n_neighbors=1)
+    
+    def update_pos2closest(self, pos_list):
+        self.neigh.fit(pos_list)
+        ret = self.neigh.kneighbors(np.array([self.x, self.y]).reshape(-1, 2), return_distance=False)
+        new_pos_index = ret[0][0]
+        x, y = pos_list[new_pos_index]
+        self.x = x
+        self.y = y
+        print("New position = ({a}, {b})".format(a=self.x, b=self.y))
 
 class Cluster:
     def __init__(self, X) -> None:
@@ -12,7 +29,7 @@ class Cluster:
         @ret: {cl}
         """
         X_scaled = StandardScaler().fit_transform(X)
-        db = DBSCAN(eps=0.1, min_samples=5).fit(X_scaled) #resolution = 10cm, group of at least 5
+        db = DBSCAN(eps=0.15, min_samples=5).fit(X_scaled) #resolution = 15cm, group of at least 5
         labels = db.labels_
         self.n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0) # Number of clusters in labels, ignoring noise if present.
         self.n_noise_ = list(labels).count(-1)
@@ -35,7 +52,7 @@ class Cluster:
             Ys = split[-1]
             res.append((np.mean(Xs), np.mean(Ys)))
         return res
-
+    
     def print_stuff(self):
         for key in self.cluster_res:
             print(key, self.cluster_res[key])
@@ -77,14 +94,89 @@ class Cluster:
 
         plt.title('Estimated number of clusters: %d' % self.n_clusters_)
 
+def Kalman():
+    x_observations = np.array([4000, 4260, 4550, 4860, 5110])
+    v_observations = np.array([280, 282, 285, 286, 290])
+
+    z = np.c_[x_observations, v_observations]
+
+    # Initial Conditions
+    a = 2  # Acceleration
+    v = 280
+    t = 1  # Difference in time
+
+    # Process / Estimation Errors
+    error_est_x = 20
+    error_est_v = 5
+
+    # Observation Errors
+    error_obs_x = 25  # Uncertainty in the measurement
+    error_obs_v = 6
+
+    def prediction2d(x, v, t, a):
+        A = np.array([[1, t],
+                    [0, 1]])
+        X = np.array([[x],
+                    [v]])
+        B = np.array([[0.5 * t ** 2],
+                    [t]])
+        X_prime = A.dot(X) + B.dot(a)
+        return X_prime
+
+
+    def covariance2d(sigma1, sigma2):
+        cov1_2 = sigma1 * sigma2
+        cov2_1 = sigma2 * sigma1
+        cov_matrix = np.array([[sigma1 ** 2, cov1_2],
+                            [cov2_1, sigma2 ** 2]])
+        return np.diag(np.diag(cov_matrix))
+
+
+    # Initial Estimation Covariance Matrix
+    P = covariance2d(error_est_x, error_est_v)
+    A = np.array([[1, t],
+                [0, 1]])
+
+    # Initial State Matrix
+    X = np.array([[z[0][0]],
+                [v]])
+    n = len(z[0])
+
+    for data in z[1:]:
+        X = prediction2d(X[0][0], X[1][0], t, a)
+        # To simplify the problem, professor
+        # set off-diagonal terms to 0.
+        P = np.diag(np.diag(A.dot(P).dot(A.T)))
+
+        # Calculating the Kalman Gain
+        H = np.identity(n)
+        R = covariance2d(error_obs_x, error_obs_v)
+        S = H.dot(P).dot(H.T) + R
+        K = P.dot(H).dot(inv(S))
+
+        # Reshape the new data into the measurement space.
+        Y = H.dot(data).reshape(n, -1)
+
+        # Update the State Matrix
+        # Combination of the predicted state, measured values, covariance matrix and Kalman Gain
+        X = X + K.dot(Y - H.dot(X))
+
+        # Update Process Covariance Matrix
+        P = (np.identity(len(K)) - K.dot(H)).dot(P)
+
+        print("Kalman Filter State Matrix:\n", X)
+
 if __name__ == "__main__":
-    # Generate sample data
-    centers = [[1, 1], [-1, -1], [1, -1]]
+    centers = [[1, 1], [-1, -1], [1, -1]]     # Generate sample data
     X, labels_true = make_blobs(n_samples=100, centers=centers, cluster_std=0.1,
                                 random_state=0)
+    # cluster = Cluster(X)
+    # cluster.plot()
+    # print(cluster.get_centers())
+    # plt.show()
 
-    cluster = Cluster(X)
-    cluster.plot()
-    print(cluster.get_centers())
-
-    plt.show()
+    #test moving object
+    o = fObject(1,1)
+    for i in range(10):
+        grp = X[i*10 : i*10+10]
+        o.update_pos2closest(grp)
