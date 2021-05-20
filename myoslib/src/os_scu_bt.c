@@ -81,7 +81,7 @@ int send_notification(uint8_t* raw_data, uint8_t length) {
 	if (rc == 0) {
 
 		printk("[SEND] ");
-		for (int i = 0; i < DATA_SIZE; i++) {
+		for (int i = 0; i < length; i++) {
 			printk("%X ", data[i]);
 		}
 		printk("\n");

@@ -70,11 +70,14 @@ void notify(void) {
 	if (heartrate == 160U) {
 		heartrate = 90U;
 	}
+	uint8_t data_size = 20;
+	uint8_t data[data_size];
 
-	uint8_t data[DATA_SIZE];
-	memset(data, (heartrate - 20), sizeof(uint8_t) * DATA_SIZE);
-	data[DATA_SIZE - 1] = heartrate;
-	send_notification(data, DATA_SIZE);
+	memset(data, heartrate, sizeof(uint8_t) * 10);
+	for (int i = 10; i < data_size; i++) {
+		data[i] = i - heartrate;
+	}
+	send_notification(data, data_size);
 }
 
 
@@ -142,6 +145,7 @@ void main(void) {
 	/* Implement notification. At the moment there is no suitable way
 	 * of starting delayed work so we do it here
 	 */
+
 	while (1) {
 		k_sleep(K_SECONDS(1));
 
