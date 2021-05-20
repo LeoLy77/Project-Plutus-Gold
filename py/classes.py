@@ -152,7 +152,6 @@ def Kalman():
 
     for data in z[1:]:
         X = prediction2d(X[0][0], X[1][0], t, a)
-        # To simplify the problem, professor
         # set off-diagonal terms to 0.
         P = np.diag(np.diag(A.dot(P).dot(A.T)))
 
