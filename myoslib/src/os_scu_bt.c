@@ -71,27 +71,98 @@ static int init(const struct device *dev) {
 	return 0;
 }
 
-
 int send_notification(uint8_t* raw_data, uint8_t length) {
+	
+	int rc, err = 0;
+    uint8_t mac = MAX_BT_DATA_SIZE;
+	uint8_t last_el_size = (length % mac);
+	uint8_t bt_arr_len = 0;
+	
+	bt_arr_len = length/(MAX_BT_DATA_SIZE+ 0.0);
+	if (last_el_size > 0) {
+		bt_arr_len ++;
+	}
+	printk("last_el_size = %d, bt_arr_len = %d\n", last_el_size, bt_arr_len);
 
-	uint8_t data[length];
-	memcpy(data, raw_data, sizeof(uint8_t)*length);
-	int rc = bt_gatt_notify(NULL, &bt_svc.attrs[1], &data, sizeof(uint8_t)*length);
+	// //Send preamble and Data length
+	uint8_t preamble_data[PREAMBLE_SIZE];
+	for (int i = 0; i < 4; i++) {
 
-	if (rc == 0) {
+		preamble_data[i] = ((PREAMBLE_START >> 8*(i)) & 0xFF);
+	}
+	preamble_data[PREAMBLE_SIZE - 1] = bt_arr_len; //Number of bluetooth packages 
 
-		printk("[SEND] ");
-		for (int i = 0; i < length; i++) {
-			printk("%X ", data[i]);
-		}
-		printk("\n");
+	rc = bt_gatt_notify(NULL, &bt_svc.attrs[1], &preamble_data, sizeof(uint8_t)*PREAMBLE_SIZE);
+	err = (rc == -ENOTCONN ? 0 : rc);
+	if (err == 0) {
+
+		printk("[SEND] PREAMBLE START\n");
 	} else {
 
-		printk("[SEND BAD]\n");
+		printk("[SEND BAD] PREAMBLE START %d\n", bt_arr_len);
+		return err;
+	}
+	//Now send the data
+	uint8_t itr_cnt = 0;
+	for (int i = 0; i < bt_arr_len; i++) {
+
+		uint8_t arr_len = MAX_BT_DATA_SIZE;
+		if (i == (bt_arr_len - 1)) {
+			if (bt_arr_len == 1) {
+
+				arr_len = length;
+			} else {
+				arr_len = last_el_size;
+			}
+		}
+
+		uint8_t data[arr_len + DT_LEN_HEADER_SIZE];
+		data[0] = (uint8_t) (i + 1);
+
+		for (int k = 1, j = itr_cnt; k < arr_len + DT_LEN_HEADER_SIZE; k++, j++) {
+			memcpy(&data[k], &raw_data[j], sizeof(uint8_t));
+		}
+
+        itr_cnt += arr_len;
+        
+		rc = bt_gatt_notify(NULL, &bt_svc.attrs[1], &data, sizeof(uint8_t)*(arr_len + DT_LEN_HEADER_SIZE));
+		err = (rc == -ENOTCONN ? 0 : rc);
+
+		if (err == 0) {
+
+			printk("[SEND] ");
+			for (int i = 0; i < length; i++) {
+				printk("%X ", data[i]);
+			}
+			printk("\n");
+		} else {
+
+			printk("[SEND BAD] NOTI\n");
+			return err;
+		}
 	}
 
-	return rc == -ENOTCONN ? 0 : rc;
+	//finish
+	for (int i = 0; i < 4; i++) {
+
+		preamble_data[i] = ((PREAMBLE_END >> 8*(i)) & 0xFF);
+	}
+
+	rc = bt_gatt_notify(NULL, &bt_svc.attrs[1], &preamble_data, sizeof(uint8_t)*PREAMBLE_SIZE);
+	err = (rc == -ENOTCONN ? 0 : rc);
+	if (err == 0) {
+
+		printk("[SEND] PREAMBLE END\n");
+	} else {
+
+		printk("[SEND BAD] PREAMBLE END\n");
+		return err;
+	}
+
+	return err;
+
 }
+
 
 SYS_INIT(init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
 
@@ -109,7 +180,7 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 	printk("Disconnected (reason 0x%02x)\n", reason);
 }
 
-struct bt_conn_cb conn_callbacks = {
+struct bt_conn_cb scu_conn_callbacks = {
 	.connected = connected,
 	.disconnected = disconnected,
 };
@@ -122,7 +193,7 @@ static void auth_cancel(struct bt_conn *conn) {
 	printk("Pairing cancelled: %s\n", addr);
 }
 
-struct bt_conn_auth_cb auth_cb_display = {
+struct bt_conn_auth_cb scu_auth_cb_display = {
 	.cancel = auth_cancel,
 };
 

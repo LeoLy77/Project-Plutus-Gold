@@ -70,11 +70,11 @@ void notify(void) {
 	if (heartrate == 160U) {
 		heartrate = 90U;
 	}
-	uint8_t data_size = 20;
+	uint8_t data_size = 19;
 	uint8_t data[data_size];
 
 	memset(data, heartrate, sizeof(uint8_t) * 10);
-	for (int i = 10; i < data_size; i++) {
+	for (int i = 11; i < data_size; i++) {
 		data[i] = i - heartrate;
 	}
 	send_notification(data, data_size);
@@ -139,15 +139,15 @@ void main(void) {
 
 	bt_ready();
 
-	bt_conn_cb_register(&conn_callbacks);
-	bt_conn_auth_cb_register(&auth_cb_display);
+	bt_conn_cb_register(&scu_conn_callbacks);
+	bt_conn_auth_cb_register(&scu_auth_cb_display);
 
 	/* Implement notification. At the moment there is no suitable way
 	 * of starting delayed work so we do it here
 	 */
 
 	while (1) {
-		k_sleep(K_SECONDS(1));
+		k_sleep(K_SECONDS(2));
 
 		notify();
 	}

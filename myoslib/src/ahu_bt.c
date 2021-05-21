@@ -10,18 +10,18 @@
 *************************************************************** */
 
 /* Includes ------------------------------------------------------------------*/
-#include <zephyr/types.h>
-#include <stddef.h>
-#include <string.h>
-#include <errno.h>
-#include <zephyr.h>
-#include <init.h>
+// #include <zephyr/types.h>
+// #include <stddef.h>
+// #include <string.h>
+// #include <errno.h>
+// #include <zephyr.h>
+// #include <init.h>
 
-#include <bluetooth/bluetooth.h>
-#include <bluetooth/hci.h>
-#include <bluetooth/conn.h>
-#include <bluetooth/uuid.h>
-#include <bluetooth/gatt.h>
+// #include <bluetooth/bluetooth.h>
+// #include <bluetooth/hci.h>
+// #include <bluetooth/conn.h>
+// #include <bluetooth/uuid.h>
+// #include <bluetooth/gatt.h>
 
 #include <ahu_bt.h>
 /* Private define ------------------------------------------------------------*/
@@ -40,26 +40,22 @@ static struct bt_gatt_subscribe_params subscribe_params;
   * @brief  pack bluetooth uuid data to json format to send over serial communication
   * @param 	val - bluetooth data struct
   */
-// void s4433912_bt_data2json(const struct bt_static_jsdata* val, uint8_t id, uint8_t static_ids) {
+// void bt_data2json(const struct bt_static_jsdata* val, uint8_t num_packets) {
 
 //     struct json_obj_descr js_descr[] = {
-//         JSON_OBJ_DESCR_PRIM(struct bt_static_jsdata, rssi, JSON_TOK_NUMBER),
-//         JSON_OBJ_DESCR_PRIM(struct bt_static_jsdata, ulsd, JSON_TOK_NUMBER),
-//         JSON_OBJ_DESCR_PRIM(struct bt_static_jsdata, pwr, JSON_TOK_NUMBER),
+//         JSON_OBJ_DESCR_PRIM(struct bt_static_jsdata, x, JSON_TOK_NUMBER),
+//         JSON_OBJ_DESCR_PRIM(struct bt_static_jsdata, y, JSON_TOK_NUMBER),
+//         JSON_OBJ_DESCR_PRIM(struct bt_static_jsdata, vel, JSON_TOK_NUMBER),
 //     };
 
 //     struct json_obj_descr js_descr_array[] = {
-//         JSON_OBJ_DESCR_PRIM(struct bt_node_jsdata, static_ids, JSON_TOK_NUMBER),
-//         JSON_OBJ_DESCR_PRIM(struct bt_node_jsdata, id, JSON_TOK_NUMBER),
-//         JSON_OBJ_DESCR_OBJ_ARRAY(struct bt_node_jsdata, data, NUM_NODES,
+//         JSON_OBJ_DESCR_OBJ_ARRAY(struct bt_node_jsdata, data, num_packets,
 //                                 data_len, js_descr, ARRAY_SIZE(js_descr)),
 //     };
 
 //     struct bt_node_jsdata jsdata;
-//     memcpy(jsdata.data, val, sizeof(struct bt_static_jsdata)*NUM_NODES);
-//     jsdata.data_len = NUM_NODES;
-//     jsdata.id = id;
-//     jsdata.static_ids = static_ids;
+//     memcpy(jsdata.data, val, sizeof(struct bt_static_jsdata)*num_packets);
+//     jsdata.data_len = num_packets;
     
 //     char le_buffer[1024];
 //     int ret = json_obj_encode_buf(js_descr_array, ARRAY_SIZE(js_descr_array),
@@ -67,7 +63,7 @@ static struct bt_gatt_subscribe_params subscribe_params;
 
 //     if (ret != 0) {
 
-//         printk("[JS_BAD] JSON encoding failed %d\n", ret);
+//         printk("[JS_BAD]\n", ret);
 //     } else {
 
 //         printk("[JS_GUD]\n");
@@ -75,6 +71,62 @@ static struct bt_gatt_subscribe_params subscribe_params;
 //         printk("%s\n", le_buffer);
 //     }
 // }
+
+static void process_bt_data(const uint8_t *raw_data, uint16_t length) {
+
+	static uint8_t running = 0;
+	static uint8_t pkg_len = 0;
+
+	if (length == PREAMBLE_SIZE) {
+
+    	int pre;
+    	memcpy(&pre, raw_data, sizeof(uint8_t)*4);//Preample minus data length
+
+		if (pre == PREAMBLE_START && running == 0){
+
+			running = 1;
+			pkg_len = raw_data[PREAMBLE_SIZE - 1];
+			printk("[HANDSHAKE MADE]\n");
+			return;
+		} else if (pre == PREAMBLE_END && running == 1) {
+
+			running = 0;
+			printk("[CONN ENDED]\n");
+			return;
+		} 
+		
+		if (running == 0) {
+
+			printk("[BAD HANDSHAKE]");
+			for (int i = 0; i < length; i++) {
+				printk("%X ", raw_data[i]);
+			}
+			printk("\n");
+			running = 0;
+			return;
+		}
+	}
+	//Never reaches here without clearing the preample
+	uint8_t part_num = raw_data[0];
+	if (part_num > pkg_len) {
+		running = 0;
+		pkg_len = 0;
+		printk("[CONFLICT PKG ID %X]\n", part_num);
+		return;
+	}
+
+	uint8_t data_len = length - DT_LEN_HEADER_SIZE;
+	uint8_t data[data_len];
+	for (uint8_t i = DT_LEN_HEADER_SIZE, j = 0; i < length; i++, j++) {
+		memcpy(&data[j], &raw_data[i], sizeof(uint8_t));
+	}
+	printk("[DATA %d SIZE %d]\n", part_num, data_len);
+	pkg_len--;
+	// struct bt_static_jsdata* val;
+	// uint8_t num_packets;
+
+	// bt_data2json(val, num_packets);
+}
 
 static uint8_t notify_func(struct bt_conn *conn,
 			   struct bt_gatt_subscribe_params *params,
@@ -84,13 +136,10 @@ static uint8_t notify_func(struct bt_conn *conn,
 		params->value_handle = 0U;
 		return BT_GATT_ITER_STOP;
 	}
-	uint8_t* data = (uint8_t*) raw_data;
-	printk("[NOTIFICATION size %d]", length);
-	for (int i = 0; i < length; i++) {
-		printk("%X ", data[i]);
-	}
-	printk("\n");
+	// uint8_t* data = (uint8_t*) raw_data;
+	// printk("[NOTIFICATION size %d]\n", length);
 
+	process_bt_data((uint8_t*) raw_data, length);
 	return BT_GATT_ITER_CONTINUE;
 }
 
@@ -185,7 +234,7 @@ static bool eir_found(struct bt_data *data, void *user_data) {
 						param, &default_conn);
 			if (err) {
 				printk("Create conn failed (err %d)\n", err);
-				start_scan();
+				ahu_start_scan();
 			}
 
 			return false;
@@ -211,8 +260,7 @@ static void device_found(const bt_addr_le_t *addr, int8_t rssi, uint8_t type,
 	}
 }
 
-// static void start_scan(void) {
-void start_scan(void) {
+void ahu_start_scan(void) {
 	int err;
 
 	/* Use active scanning and disable duplicate filtering to handle any
@@ -246,7 +294,7 @@ static void connected(struct bt_conn *conn, uint8_t conn_err) {
 		bt_conn_unref(default_conn);
 		default_conn = NULL;
 
-		start_scan();
+		ahu_start_scan();
 		return;
 	}
 
@@ -283,11 +331,11 @@ static void disconnected(struct bt_conn *conn, uint8_t reason) {
 	bt_conn_unref(default_conn);
 	default_conn = NULL;
 
-	start_scan();
+	ahu_start_scan();
 }
 
 // static struct bt_conn_cb conn_callbacks = {
-struct bt_conn_cb conn_callbacks = {
+struct bt_conn_cb ahu_conn_callbacks = {
 	.connected = connected,
 	.disconnected = disconnected,
 };

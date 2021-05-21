@@ -13,14 +13,22 @@
 #ifndef AHU_BT_H
 #define AHU_BT_H
 
+#include <errno.h>
+#include <zephyr.h>
+#include <init.h>
+
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/hci.h>
 #include <bluetooth/conn.h>
 #include <bluetooth/uuid.h>
 #include <bluetooth/gatt.h>
+
 #include <sys/byteorder.h>
+
 #include <string.h>
 #include <zephyr/types.h>
+#include <sys/util.h>
+#include <stddef.h>
 
 #include "s4433912_os_bt_share.h"
 
@@ -31,20 +39,18 @@
 // };
 
 
-// struct bt_static_jsdata {
-//     int rssi;
-//     int ulsd;
-//     int pwr;
-// };
+struct bt_static_jsdata {
+    int16_t x; //-32767 -> 32767
+    int16_t y;
+    uint16_t vel;
+};
 
-// struct bt_node_jsdata {
-//     struct bt_static_jsdata data[NUM_NODES];
-//     int id;
-//     int static_ids;
-//     size_t data_len;
-// };
+struct bt_node_jsdata {
+    struct bt_static_jsdata* data;
+    uint8_t data_len;
+};
 
-extern struct bt_conn_cb conn_callbacks;
-void start_scan(void);
+extern struct bt_conn_cb ahu_conn_callbacks;
+void ahu_start_scan(void);
 
 #endif

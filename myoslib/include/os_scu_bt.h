@@ -24,8 +24,8 @@
 
 #include "s4433912_os_bt_share.h"
 
-extern struct bt_conn_cb conn_callbacks;
-extern struct bt_conn_auth_cb auth_cb_display;
+extern struct bt_conn_cb scu_conn_callbacks;
+extern struct bt_conn_auth_cb scu_auth_cb_display;
 
 int send_notification(uint8_t* data, uint8_t length);
 

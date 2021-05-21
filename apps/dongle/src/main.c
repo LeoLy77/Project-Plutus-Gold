@@ -31,7 +31,7 @@
 #include "s4433912_os_bt_share.h"
 /* Private define ------------------------------------------------------------*/
 #define PRIORITY 6
-#define STACKSIZE 200
+#define STACKSIZE 500
 /* Private typedef -----------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -97,7 +97,7 @@ void main(void) {
 
 	printk("Bluetooth initialized successfully\n");
 
-	bt_conn_cb_register(&conn_callbacks);
+	bt_conn_cb_register(&ahu_conn_callbacks);
 
-	start_scan();
+	ahu_start_scan();
 }
