@@ -109,9 +109,9 @@ static void process_bt_data(const uint8_t *raw_data, uint16_t length) {
 	//Never reaches here without clearing the preample
 	uint8_t part_num = raw_data[0];
 	if (part_num > pkg_len) {
+		printk("[%d CONFLICT PKG ID %X]\n", pkg_len, part_num);
 		running = 0;
 		pkg_len = 0;
-		printk("[CONFLICT PKG ID %X]\n", part_num);
 		return;
 	}
 
@@ -121,7 +121,6 @@ static void process_bt_data(const uint8_t *raw_data, uint16_t length) {
 		memcpy(&data[j], &raw_data[i], sizeof(uint8_t));
 	}
 	printk("[DATA %d SIZE %d]\n", part_num, data_len);
-	pkg_len--;
 	// struct bt_static_jsdata* val;
 	// uint8_t num_packets;
 

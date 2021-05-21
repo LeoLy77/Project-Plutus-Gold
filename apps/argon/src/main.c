@@ -70,7 +70,7 @@ void notify(void) {
 	if (heartrate == 160U) {
 		heartrate = 90U;
 	}
-	uint8_t data_size = 19;
+	uint8_t data_size = 28;
 	uint8_t data[data_size];
 
 	memset(data, heartrate, sizeof(uint8_t) * 10);
