@@ -31,9 +31,10 @@
 #include "s4433912_os_led.h"
 #include "s4433912_os_bt_share.h"
 #include "os_scu_bt.h"
+#include "awr_spi.h"
 /* Private define ------------------------------------------------------------*/
-#define PRIORITY 6
 #define STACKSIZE 1024
+#define TASK_PRIORITY 14
 /* Private typedef -----------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -73,9 +74,8 @@ void notify(void) {
 	uint8_t data_size = 28;
 	uint8_t data[data_size];
 
-	memset(data, heartrate, sizeof(uint8_t) * 10);
-	for (int i = 11; i < data_size; i++) {
-		data[i] = i - heartrate;
+	for (int i = 0; i < data_size; i++) {
+		data[i] = heartrate + i;
 	}
 	send_notification(data, data_size);
 }
@@ -135,7 +135,7 @@ void main(void) {
 	}
 
 	k_thread_create(&task_bt_blink, btBlink_stack_area,
-		STACKSIZE, Task_BtLedBlink, NULL, NULL, NULL, PRIORITY, 0, K_NO_WAIT);
+		STACKSIZE, Task_BtLedBlink, NULL, NULL, NULL, TASK_PRIORITY, 0, K_NO_WAIT);
 
 	bt_ready();
 
@@ -153,3 +153,6 @@ void main(void) {
 	}
 
 }
+
+K_THREAD_DEFINE(LED_Blink, STACKSIZE, LED_Blink_Task, NULL,NULL,NULL, TASK_PRIORITY, 0, 0);
+K_THREAD_DEFINE(SPI_Receive, STACKSIZE, SPI_Receive_Task, NULL,NULL,NULL, TASK_PRIORITY, 0, 0);

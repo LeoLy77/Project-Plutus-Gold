@@ -12,5 +12,8 @@ all:
 
 	$(CC) -c $(CFLAGS) -MD -Iinclude src/ahu_bt.c -o $(OBJ_DIR)/ahu_bt.o
 	$(AR) -rcs $(LIB_DIR)/libmylib.a $(OBJ_DIR)/ahu_bt.o
+
+	$(CC) -c $(CFLAGS) -MD -Iinclude src/awr_spi.c -o $(OBJ_DIR)/awr_spi.o
+	$(AR) -rcs $(LIB_DIR)/libmylib.a $(OBJ_DIR)/awr_spi.o
 clean:
 	rm -rf $(OBJ_DIR) $(LIB_DIR)

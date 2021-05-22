@@ -120,7 +120,12 @@ static void process_bt_data(const uint8_t *raw_data, uint16_t length) {
 	for (uint8_t i = DT_LEN_HEADER_SIZE, j = 0; i < length; i++, j++) {
 		memcpy(&data[j], &raw_data[i], sizeof(uint8_t));
 	}
-	printk("[DATA %d SIZE %d]\n", part_num, data_len);
+	printk("[DATA %d SIZE %d] ", part_num, data_len);
+
+	for (int i = 0; i < data_len; i++) {
+		printk("%X ", data[i]);
+	}
+	printk("\n");
 	// struct bt_static_jsdata* val;
 	// uint8_t num_packets;
 
