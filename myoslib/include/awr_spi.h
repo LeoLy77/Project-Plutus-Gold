@@ -20,8 +20,17 @@
 #include <usb/usb_device.h>
 #include <drivers/uart.h>
 
+#include "s4433912_os_bt_share.h"
+#include "os_scu_bt.h"
+
+/* The devicetree node identifier for the "led0" alias. */
+#define LED0_NODE DT_ALIAS(led0)
+#define LED0	DT_GPIO_LABEL(LED0_NODE, gpios)
+#define PIN	DT_GPIO_PIN(LED0_NODE, gpios)
+#define FLAGS	DT_GPIO_FLAGS(LED0_NODE, gpios)
+
 typedef struct Point_t {
-	float x;
+	float x; //int16_t
 	float y;
 } Point;
 

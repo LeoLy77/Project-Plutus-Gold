@@ -10,18 +10,6 @@
 *************************************************************** */
 
 /* Includes ------------------------------------------------------------------*/
-// #include <zephyr/types.h>
-// #include <stddef.h>
-// #include <string.h>
-// #include <errno.h>
-// #include <zephyr.h>
-// #include <init.h>
-
-// #include <bluetooth/bluetooth.h>
-// #include <bluetooth/hci.h>
-// #include <bluetooth/conn.h>
-// #include <bluetooth/uuid.h>
-// #include <bluetooth/gatt.h>
 
 #include <ahu_bt.h>
 /* Private define ------------------------------------------------------------*/
@@ -72,11 +60,18 @@ static struct bt_gatt_subscribe_params subscribe_params;
 //     }
 // }
 
+typedef struct Point_t {
+	float x; //int16_t
+	float y;
+} Point;
+
 static void process_bt_data(const uint8_t *raw_data, uint16_t length) {
+
+	static uint8_t data_buffer[1024];
 
 	static uint8_t running = 0;
 	static uint8_t pkg_len = 0;
-
+	static uint8_t total_data_len = 0;
 	if (length == PREAMBLE_SIZE) {
 
     	int pre;
@@ -86,10 +81,23 @@ static void process_bt_data(const uint8_t *raw_data, uint16_t length) {
 
 			running = 1;
 			pkg_len = raw_data[PREAMBLE_SIZE - 1];
+			
 			printk("[HANDSHAKE MADE]\n");
 			return;
 		} else if (pre == PREAMBLE_END && running == 1) {
+			
+			uint8_t struct_len = ((total_data_len*sizeof(uint8_t)) / sizeof(Point));
 
+			printk("[RECV] %d STRUCTs\n", struct_len);
+			Point recv[struct_len];
+			for (int i = 0; i < struct_len; i++) {
+
+    			memcpy(&recv[i], &data_buffer[sizeof(Point)*i], sizeof(Point));
+				printk("P %d, (x, y) = (%.6f, %.6f)\n", i, recv[i].x, recv[i].y);
+			}
+
+			pkg_len = 0;
+			total_data_len = 0;
 			running = 0;
 			printk("[CONN ENDED]\n");
 			return;
@@ -102,34 +110,44 @@ static void process_bt_data(const uint8_t *raw_data, uint16_t length) {
 				printk("%X ", raw_data[i]);
 			}
 			printk("\n");
+
 			running = 0;
+			pkg_len = 0;
+			total_data_len = 0;
 			return;
 		}
 	}
 	//Never reaches here without clearing the preample
 	uint8_t part_num = raw_data[0];
 	if (part_num > pkg_len) {
+
 		printk("[%d CONFLICT PKG ID %X]\n", pkg_len, part_num);
+
 		running = 0;
 		pkg_len = 0;
+		total_data_len = 0;
 		return;
 	}
 
-	uint8_t data_len = length - DT_LEN_HEADER_SIZE;
-	uint8_t data[data_len];
-	for (uint8_t i = DT_LEN_HEADER_SIZE, j = 0; i < length; i++, j++) {
-		memcpy(&data[j], &raw_data[i], sizeof(uint8_t));
-	}
-	printk("[DATA %d SIZE %d] ", part_num, data_len);
+	// uint8_t data_len = length - DT_LEN_HEADER_SIZE;
+	// uint8_t data[data_len];
+	// for (uint8_t i = DT_LEN_HEADER_SIZE, j = 0; i < length; i++, j++) {
+	// 	memcpy(&data[j], &raw_data[i], sizeof(uint8_t));
+	// }
+	// printk("[DATA %d SIZE %d] ", part_num, data_len);
 
-	for (int i = 0; i < data_len; i++) {
-		printk("%X ", data[i]);
-	}
-	printk("\n");
-	// struct bt_static_jsdata* val;
-	// uint8_t num_packets;
+	// for (int i = 0; i < data_len; i++) {
+	// 	printk("%X ", data[i]);
+	// }
+	// printk("\n");
 
-	// bt_data2json(val, num_packets);
+	for (uint8_t i = DT_LEN_HEADER_SIZE, j = total_data_len; i < length; i++, j++) {
+
+		memcpy(&data_buffer[j], &raw_data[i], sizeof(uint8_t));
+	}
+	total_data_len += (length - DT_LEN_HEADER_SIZE);
+
+
 }
 
 static uint8_t notify_func(struct bt_conn *conn,

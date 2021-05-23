@@ -1,11 +1,5 @@
 #include <awr_spi.h>
 
-/* The devicetree node identifier for the "led0" alias. */
-#define LED0_NODE DT_ALIAS(led0)
-#define LED0	DT_GPIO_LABEL(LED0_NODE, gpios)
-#define PIN	DT_GPIO_PIN(LED0_NODE, gpios)
-#define FLAGS	DT_GPIO_FLAGS(LED0_NODE, gpios)
-
 const struct device *spi_dev;
 static const struct spi_config spi_cfg_master = {
     .operation = SPI_OP_MODE_MASTER | SPI_WORD_SET(8) | SPI_TRANSFER_MSB | SPI_MODE_CPHA,
@@ -57,8 +51,7 @@ void SPI_Receive_Task(void)
 {
 	uint8_t rx_buf[8];
 	uint8_t** rx_buffer;
-	uint8_t num_points;
-	Point points[64];
+	uint16_t num_points;
 	uint32_t test;
 
 	spi_dev = device_get_binding("SPI_3");
@@ -72,11 +65,13 @@ void SPI_Receive_Task(void)
 		do {
 			memset(rx_buf, 0, sizeof(rx_buf));
 			spi_receive(rx_buf, 8);
-			k_msleep(200);
+			k_msleep(20);
 		} while (rx_buf[0] != 0xA0);
 
 		num_points = rx_buf[1];
 		printk("Number of Detected Objects: %d\r\n", num_points);
+
+		Point points[num_points];
 
 		for (uint8_t i = 0; i < num_points; i++)
 		{
@@ -93,8 +88,6 @@ void SPI_Receive_Task(void)
 		{
 			printk("(%.6f, %.6f)\n", points[i].x, points[i].y);
 		}
-
-		memset(points, 0, sizeof(Point) * num_points);
 
 	}
 }

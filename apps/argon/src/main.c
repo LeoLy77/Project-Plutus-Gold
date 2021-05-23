@@ -35,6 +35,7 @@
 /* Private define ------------------------------------------------------------*/
 #define STACKSIZE 1024
 #define TASK_PRIORITY 14
+#define SPI_TASK_PRIORITY 7
 /* Private typedef -----------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -64,20 +65,25 @@ static void bt_ready(void) {
 }
 
 void notify(void) {
-	static uint8_t heartrate = 90U;
+	static uint8_t arr_size = 5U;
 
-	/* Heartrate measurements simulation */
-	heartrate += 2;
-	if (heartrate == 160U) {
-		heartrate = 90U;
+	Point pnt_arr[arr_size];
+	for (int i = 0; i < arr_size; i++) {
+
+		pnt_arr[i].x = 0.12345678 + (i + 1);
+		pnt_arr[i].y = 0.87654321 + (i + 3);
 	}
-	uint8_t data_size = 28;
+
+	uint8_t data_size = sizeof(pnt_arr);
 	uint8_t data[data_size];
-
-	for (int i = 0; i < data_size; i++) {
-		data[i] = heartrate + i;
-	}
+    memcpy(data, &pnt_arr, sizeof(pnt_arr));
+	printk("[NO STRUCT] %d\n", arr_size);
 	send_notification(data, data_size);
+	
+	arr_size++;
+	if (arr_size > 30U) {
+		arr_size = 5U;
+	}
 }
 
 
@@ -109,19 +115,18 @@ void main(void) {
 
 #if defined(CONFIG_USB_UART_CONSOLE)
 	const struct device* dev;
-	uint32_t dtr = 0;
 	//Link CDC with shell
 	dev = device_get_binding(CONFIG_UART_SHELL_ON_DEV_NAME);
 	if (dev == NULL || usb_enable(NULL)) {
 
 		return;
 	}
+	// uint32_t dtr = 0;
+	// while (!dtr) {
 
-	while (!dtr) {
-
-		uart_line_ctrl_get(dev, UART_LINE_CTRL_DTR, &dtr);
-		k_sleep(K_MSEC(100));
-	}
+	// 	uart_line_ctrl_get(dev, UART_LINE_CTRL_DTR, &dtr);
+	// 	k_sleep(K_MSEC(100));
+	// }
 #endif
 	printk("Starting Bluetooth... ... ..\n");
 
@@ -155,4 +160,4 @@ void main(void) {
 }
 
 K_THREAD_DEFINE(LED_Blink, STACKSIZE, LED_Blink_Task, NULL,NULL,NULL, TASK_PRIORITY, 0, 0);
-K_THREAD_DEFINE(SPI_Receive, STACKSIZE, SPI_Receive_Task, NULL,NULL,NULL, TASK_PRIORITY, 0, 0);
+K_THREAD_DEFINE(SPI_Receive, STACKSIZE, SPI_Receive_Task, NULL,NULL,NULL, SPI_TASK_PRIORITY, 0, 0);
