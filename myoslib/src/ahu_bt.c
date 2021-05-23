@@ -24,46 +24,57 @@ static struct bt_gatt_subscribe_params subscribe_params;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
+struct json_obj_descr js_descr[] = {
+	JSON_OBJ_DESCR_PRIM(struct bt_point_jsdata, x, JSON_TOK_NUMBER),
+	JSON_OBJ_DESCR_PRIM(struct bt_point_jsdata, y, JSON_TOK_NUMBER),
+};
+
 /**
   * @brief  pack bluetooth uuid data to json format to send over serial communication
   * @param 	val - bluetooth data struct
   */
-// void bt_data2json(const struct bt_static_jsdata* val, uint8_t num_packets) {
+void bt_data2json(Point* raw_pnt_data, uint8_t num_packets) {
 
-//     struct json_obj_descr js_descr[] = {
-//         JSON_OBJ_DESCR_PRIM(struct bt_static_jsdata, x, JSON_TOK_NUMBER),
-//         JSON_OBJ_DESCR_PRIM(struct bt_static_jsdata, y, JSON_TOK_NUMBER),
-//         JSON_OBJ_DESCR_PRIM(struct bt_static_jsdata, vel, JSON_TOK_NUMBER),
-//     };
+    struct json_obj_descr js_descr_array[] = {
+        JSON_OBJ_DESCR_OBJ_ARRAY(struct bt_frame_jsdata, data, num_packets,
+                                data_len, js_descr, ARRAY_SIZE(js_descr)),
+    };
 
-//     struct json_obj_descr js_descr_array[] = {
-//         JSON_OBJ_DESCR_OBJ_ARRAY(struct bt_node_jsdata, data, num_packets,
-//                                 data_len, js_descr, ARRAY_SIZE(js_descr)),
-//     };
+	struct bt_point_jsdata pnt_data[num_packets];
+	for (int i = 0; i < num_packets; i++) {
+		pnt_data[i].x = (int16_t) (JSON_SCALE_FT * raw_pnt_data[i].x);
+		pnt_data[i].y = (int16_t) (JSON_SCALE_FT * raw_pnt_data[i].y);
 
-//     struct bt_node_jsdata jsdata;
-//     memcpy(jsdata.data, val, sizeof(struct bt_static_jsdata)*num_packets);
-//     jsdata.data_len = num_packets;
+		// printk("P %d, (x, y) = (%d, %d)\n", i, raw_pnt_data[i].x, raw_pnt_data[i].y);
+	}
+
+    struct bt_frame_jsdata jsdata;
+	// jsdata.data = pnt_data;
+    jsdata.data_len = num_packets;
+	jsdata.data = k_malloc(sizeof(struct bt_point_jsdata) * num_packets);
+	memcpy(jsdata.data, pnt_data, sizeof(pnt_data));
+	for (int i = 0; i < num_packets; i++) {
+
+		printk("P %d, (x, y) = (%d, %d)\n", i, jsdata.data[i].x, jsdata.data[i].y);
+	}
     
-//     char le_buffer[1024];
-//     int ret = json_obj_encode_buf(js_descr_array, ARRAY_SIZE(js_descr_array),
-// 				  &jsdata, le_buffer, sizeof(le_buffer));
+    char le_buffer[2024];
 
-//     if (ret != 0) {
+    int ret = json_obj_encode_buf(js_descr_array, ARRAY_SIZE(js_descr_array),
+				  &jsdata, le_buffer, sizeof(le_buffer));
 
-//         printk("[JS_BAD]\n", ret);
-//     } else {
 
-//         printk("[JS_GUD]\n");
-//         //Start piping json to serial
-//         printk("%s\n", le_buffer);
-//     }
-// }
+    if (ret != 0) {
 
-typedef struct Point_t {
-	float x; //int16_t
-	float y;
-} Point;
+        printk("[JS_BAD] %d\n", ret);
+    } else {
+
+        printk("[JS_GUD]\n"); //Start piping json to serial
+        printk("%s\n", le_buffer);
+    }
+
+	k_free(jsdata.data);
+}
 
 static void process_bt_data(const uint8_t *raw_data, uint16_t length) {
 
@@ -81,36 +92,40 @@ static void process_bt_data(const uint8_t *raw_data, uint16_t length) {
 
 			running = 1;
 			pkg_len = raw_data[PREAMBLE_SIZE - 1];
-			
+#if DBG_PRINT
 			printk("[HANDSHAKE MADE]\n");
+#endif
 			return;
 		} else if (pre == PREAMBLE_END && running == 1) {
 			
 			uint8_t struct_len = ((total_data_len*sizeof(uint8_t)) / sizeof(Point));
-
+#if DBG_PRINT
 			printk("[RECV] %d STRUCTs\n", struct_len);
+#endif
 			Point recv[struct_len];
 			for (int i = 0; i < struct_len; i++) {
 
     			memcpy(&recv[i], &data_buffer[sizeof(Point)*i], sizeof(Point));
-				printk("P %d, (x, y) = (%.6f, %.6f)\n", i, recv[i].x, recv[i].y);
 			}
+			bt_data2json(recv, struct_len);
 
 			pkg_len = 0;
 			total_data_len = 0;
 			running = 0;
+#if DBG_PRINT
 			printk("[CONN ENDED]\n");
+#endif
 			return;
 		} 
 		
 		if (running == 0) {
-
+#if DBG_PRINT
 			printk("[BAD HANDSHAKE]");
 			for (int i = 0; i < length; i++) {
 				printk("%X ", raw_data[i]);
 			}
 			printk("\n");
-
+#endif
 			running = 0;
 			pkg_len = 0;
 			total_data_len = 0;
@@ -120,34 +135,20 @@ static void process_bt_data(const uint8_t *raw_data, uint16_t length) {
 	//Never reaches here without clearing the preample
 	uint8_t part_num = raw_data[0];
 	if (part_num > pkg_len) {
-
+#if DBG_PRINT
 		printk("[%d CONFLICT PKG ID %X]\n", pkg_len, part_num);
-
+#endif
 		running = 0;
 		pkg_len = 0;
 		total_data_len = 0;
 		return;
 	}
 
-	// uint8_t data_len = length - DT_LEN_HEADER_SIZE;
-	// uint8_t data[data_len];
-	// for (uint8_t i = DT_LEN_HEADER_SIZE, j = 0; i < length; i++, j++) {
-	// 	memcpy(&data[j], &raw_data[i], sizeof(uint8_t));
-	// }
-	// printk("[DATA %d SIZE %d] ", part_num, data_len);
-
-	// for (int i = 0; i < data_len; i++) {
-	// 	printk("%X ", data[i]);
-	// }
-	// printk("\n");
-
 	for (uint8_t i = DT_LEN_HEADER_SIZE, j = total_data_len; i < length; i++, j++) {
 
 		memcpy(&data_buffer[j], &raw_data[i], sizeof(uint8_t));
 	}
 	total_data_len += (length - DT_LEN_HEADER_SIZE);
-
-
 }
 
 static uint8_t notify_func(struct bt_conn *conn,
