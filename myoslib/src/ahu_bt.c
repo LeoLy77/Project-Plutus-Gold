@@ -25,33 +25,34 @@ static struct bt_gatt_subscribe_params subscribe_params;
 /* Private functions ---------------------------------------------------------*/
 K_FIFO_DEFINE(bt_queue_fifo);
 
+struct json_obj_descr js_descr[] = {
+	JSON_OBJ_DESCR_PRIM(struct bt_point_jsdata, x, JSON_TOK_NUMBER),
+	JSON_OBJ_DESCR_PRIM(struct bt_point_jsdata, y, JSON_TOK_NUMBER),
+};
+
+struct json_obj_descr js_descr_array[] = {
+	JSON_OBJ_DESCR_OBJ_ARRAY(struct bt_frame_jsdata, data, MAX_POINTS_LEN,
+							data_len, js_descr, ARRAY_SIZE(js_descr))};
 /**
   * @brief  pack bluetooth uuid data to json format to send over serial communication
   * @param 	val - bluetooth data struct
   */
 void bt_data2json(struct bt_frame_jsdata* jsdata) {
 
-	struct json_obj_descr js_descr[] = {
-		JSON_OBJ_DESCR_PRIM(struct bt_point_jsdata, x, JSON_TOK_NUMBER),
-		JSON_OBJ_DESCR_PRIM(struct bt_point_jsdata, y, JSON_TOK_NUMBER),
-	};
+	printk("Queue recv len %d\n", jsdata->data_len);
 
-    struct json_obj_descr js_descr_array[] = {
-        JSON_OBJ_DESCR_OBJ_ARRAY(struct bt_frame_jsdata, data, MAX_POINTS_LEN,
-                                data_len, js_descr, ARRAY_SIZE(js_descr)),
-    };
+	// printk("Queue recv len %d\n", jsdata->data_len);
+	// for (int i = 0; i < jsdata->data_len; i++) {
 
-	for (int i = 0; i < jsdata->data_len; i++) {
+	// 	printk("P %d, (x, y) = (%d, %d)\n", i, jsdata->data[i].x, jsdata->data[i].y);
+	// }
 
-		printk("P %d, (x, y) = (%d, %d)\n", i, jsdata->data[i].x, jsdata->data[i].y);
-	}
-
-	// ssize_t js_len = json_calc_encoded_len(js_descr_array, ARRAY_SIZE(js_descr_array), jsdata);
+	// ssize_t js_len = json_calc_encoded_len(&js_descr_array, sizeof(js_descr_array), jsdata);
 	// printk("[JS LEN] %d\n", js_len);
     
-    // char le_buffer[js_len];
+    // char le_buffer[500];
 
-    // int ret = json_obj_encode_buf(js_descr_array, ARRAY_SIZE(js_descr_array),
+    // int ret = json_obj_encode_buf(&js_descr_array, sizeof(js_descr_array),
 	// 			  &jsdata, le_buffer, sizeof(le_buffer));
 
     // if (ret != 0) {
@@ -75,31 +76,38 @@ void Task_Sendjson(void *dummy1, void *dummy2, void *dummy3) {
 	while(1) {
 
 		rx_data = k_fifo_get(&bt_queue_fifo, K_FOREVER);
-		bt_data2json(&rx_data->frame);
+		// struct bt_frame_jsdata frame = rx_data->frame;
+		printk("Queue recv len %d\n", rx_data->data_len);
+		// bt_data2json(&rx_data->frame);
+		// k_free(rx_data);
 	}
 }
 
 void bt_data2queue(Point* raw_pnt_data, uint8_t num_packets) {
 
-	struct bt_point_jsdata pnt_data[num_packets];
-	for (uint8_t i = 0; i < num_packets; i++) {
+	uint8_t struct_len = num_packets;
+	struct bt_point_jsdata pnt_data[struct_len];
+	for (uint8_t i = 0; i < struct_len; i++) {
 		// pnt_data[i].x = (int16_t) (JSON_SCALE_FT * raw_pnt_data[i].x);
 		// pnt_data[i].y = (int16_t) (JSON_SCALE_FT * raw_pnt_data[i].y);
-
-		pnt_data[i].x = 10;
-		pnt_data[i].y = 20;
+		printk("%d (x, y) = (%.6f, %.6f)\n", i, raw_pnt_data[i].x, raw_pnt_data[i].y);
 	}
-	struct bt_queue_t tx_data;
-	tx_data.frame.data_len = num_packets;
-	memcpy(&tx_data.frame.data, pnt_data, sizeof(pnt_data));
+	// struct bt_queue_t* tx_data = k_malloc(sizeof(struct bt_queue_t));
 
-	k_fifo_put(&bt_queue_fifo, &tx_data);
-	printk("Queued\n");
+	// memcpy(&tx_data->frame.data, pnt_data, sizeof(pnt_data)); 
+	// tx_data->data_len = struct_len;
+
+	// struct bt_queue_t tx_data;
+	// tx_data.data_len = struct_len;
+	// k_fifo_put(&bt_queue_fifo, &tx_data);
+
+	// printk("Queued %d\n", tx_data.data_len);
+	// k_free(tx_data);
 }
 
 static void process_bt_data(const uint8_t *raw_data, uint16_t length) {
 
-	static uint8_t data_buffer[800];
+	static uint8_t data_buffer[1224];
 
 	static uint8_t running = 0;
 	static uint8_t pkg_len = 0;
@@ -117,19 +125,27 @@ static void process_bt_data(const uint8_t *raw_data, uint16_t length) {
 			printk("[HANDSHAKE MADE]\n");
 #endif
 			return;
+
+		//BT transmission finished, ready for the next step
 		} else if (pre == PREAMBLE_END && running == 1) {
 			
 			uint8_t struct_len = ((total_data_len*sizeof(uint8_t)) / sizeof(Point));
 #if DBG_PRINT
 			printk("[RECV] %d STRUCTs\n", struct_len);
 #endif
-			Point recv[struct_len];
-			for (int i = 0; i < struct_len; i++) {
+			Point recv;
+			printk("[JS_GUD]\n");
 
-    			memcpy(&recv[i], &data_buffer[sizeof(Point)*i], sizeof(Point));
+			printk("{\"frame\":[");
+			for (int i = 0; i < struct_len; i++) {
+    			memcpy(&recv, &data_buffer[sizeof(Point)*i], sizeof(Point));
+				//{i:, x:, y:}
+				printk("{\"i\":%d,\"x\":%.3f,\"y\":%.3f}", i, recv.x, recv.y);
+				if (i != struct_len - 1) {
+					printk(",");
+				}
 			}
-			// bt_data2json(recv, struct_len);
-			bt_data2queue(recv, struct_len);
+			printk("]}\n");
 
 			pkg_len = 0;
 			total_data_len = 0;

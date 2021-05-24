@@ -7,6 +7,8 @@ import pandas as pd
 import time
 import glob
 import pylab
+import string
+import re
 
 
 def find_serial_port(man=""):
@@ -51,9 +53,22 @@ def save_data(json_out, lim=150):
 
 if __name__ == "__main__":
 
-    serial_conn = serial.Serial(port=find_serial_port(man=""), baudrate = 115200) #SensorTag
+    # 7-bit C1 ANSI sequences
+    ansi_escape = re.compile(r'''
+        \x1B  # ESC
+        (?:   # 7-bit C1 Fe (except CSI)
+            [@-Z\\-_]
+        |     # or [ for CSI, followed by a control sequence
+            \[
+            [0-?]*  # Parameter bytes
+            [ -/]*  # Intermediate bytes
+            [@-~]   # Final byte
+        )
+    ''', re.VERBOSE)
 
-    def read_loop(skip=2): #skip every {skip} values, 1 is no skip
+    serial_conn = serial.Serial(port=find_serial_port(man="/dev/tty.usbmodem145401"), baudrate = 115200) #SensorTag
+
+    def read_loop(skip=1): #skip every {skip} values, 1 is no skip
         json_ready = False
         recv_cnt = 0
         read_data = True
@@ -71,21 +86,28 @@ if __name__ == "__main__":
                 tmp_data = data.strip()
 
                 data = ''.join(tmp_data)
+                # print(data)
                 if not json_ready:
                     if "[JS_GUD]" in data:
                         json_ready = True
                         
                 else:
-                    tmp_data = data.split('{', 1)[-1]
-                    tmp_data = '{' + tmp_data
-                    data = ''.join(tmp_data)
+                    # tmp_data = data.split('{', 1)[-1]
+                    # tmp_data = '{' + tmp_data
+                    # data = ''.join(tmp_data)
+                    # data = '{s}'.format(s=data)
+                    # data = data.replace('"','\'')
+                    data = ansi_escape.sub('', data)
 
+                    print(data)
                     json_out = json.loads(data)
+                    print(json_out)
                     # read_data = save_data(json_out)
                     json_ready = False
 
             except Exception as e:
-                # print("Exception:", e)
+                json_ready = False
+                print("Exception:", e)
                 pass
 
         # close serial port
@@ -94,6 +116,6 @@ if __name__ == "__main__":
 
     for i in range(3):
         print("COUNT DOWN ", 3 - i)
-        time.sleep(0.3)
+        time.sleep(0.1)
     print("STARTING...")
     read_loop()

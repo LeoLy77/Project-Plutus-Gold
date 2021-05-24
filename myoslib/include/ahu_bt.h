@@ -36,7 +36,7 @@
 
 #include "s4433912_os_bt_share.h"
 
-#define MAX_POINTS_LEN 20
+#define MAX_POINTS_LEN 30
 
 typedef struct Point_t {
 	float x; //int16_t
@@ -55,7 +55,9 @@ struct bt_frame_jsdata {
 
 struct bt_queue_t {
 	void* fifo_reserved; /* 1st word reserved for use by fifo */
-	struct bt_frame_jsdata frame;
+	// struct bt_frame_jsdata frame;
+    Point data[MAX_POINTS_LEN];
+    uint8_t data_len;
 };
 
 extern struct bt_conn_cb ahu_conn_callbacks;
