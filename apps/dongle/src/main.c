@@ -29,11 +29,14 @@
 #include "ahu_bt.h"
 #include "s4433912_os_bt_share.h"
 /* Private define ------------------------------------------------------------*/
+#define STACKSIZE 500
+#define TASK_PRIORITY 12
 /* Private typedef -----------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
+K_THREAD_DEFINE(SendJSON, STACKSIZE, Task_Sendjson, NULL, NULL, NULL, TASK_PRIORITY, 0, 0);
 
 void main(void) {
 	int err;

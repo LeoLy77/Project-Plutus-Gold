@@ -10,8 +10,8 @@
 
 *************************************************************** */
 
-#ifndef S4433912_OS_BT_SHARE_H
-#define S4433912_OS_BT_SHARE_H
+#ifndef OS_BT_SHARE_H
+#define OS_BT_SHARE_H
 
 #define MAX_BT_SIZE         20
 #define PREAMBLE_SIZE       5
