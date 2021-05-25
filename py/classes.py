@@ -7,7 +7,7 @@ from sklearn.neighbors import NearestNeighbors
 import matplotlib.pyplot as plt
 from numpy.linalg import inv
 
-class fObject:
+class Point:
     def __init__(self, x, y) -> None:
         self.x = x
         self.y = y
@@ -36,8 +36,9 @@ class Cluster:
         X = [array(x, y), ...]\n
         @ret: {cl}
         """
+        self.X = X
         X_scaled = StandardScaler().fit_transform(X)
-        db = DBSCAN(eps=0.15, min_samples=5).fit(X_scaled) #resolution = 15cm, group of at least 5
+        db = DBSCAN(eps=0.25, min_samples=2).fit(X_scaled) #resolution = 15cm, group of at least 5
         labels = db.labels_
         self.n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0) # Number of clusters in labels, ignoring noise if present.
         self.n_noise_ = list(labels).count(-1)
@@ -78,12 +79,14 @@ class Cluster:
         #     % metrics.silhouette_score(X, labels))
 
     # Plot result
-    def plot(self):
+    def plot(self, fig=None):
+        if not fig:
+            fig = plt
         core_samples_mask = np.zeros_like(self.labels, dtype=bool)
         core_samples_mask[self.cluster.core_sample_indices_] = True
         # Black removed and is used for noise instead.
         unique_labels = set(self.labels)
-        colors = [plt.cm.Spectral(each)
+        colors = [fig.cm.Spectral(each)
                 for each in np.linspace(0, 1, len(unique_labels))]
         for k, col in zip(unique_labels, colors):
             if k == -1:
@@ -92,15 +95,15 @@ class Cluster:
 
             class_member_mask = (self.labels == k)
 
-            xy = X[class_member_mask & core_samples_mask]
-            plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
+            xy = self.X[class_member_mask & core_samples_mask]
+            fig.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
                     markeredgecolor='k', markersize=14)
 
-            xy = X[class_member_mask & ~core_samples_mask]
-            plt.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
+            xy = self.X[class_member_mask & ~core_samples_mask]
+            fig.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
                     markeredgecolor='k', markersize=6)
 
-        plt.title('Estimated number of clusters: %d' % self.n_clusters_)
+        fig.title('Estimated number of clusters: %d' % self.n_clusters_)
 
 def Kalman():
     x_observations = np.array([4000, 4260, 4550, 4860, 5110])
@@ -175,21 +178,24 @@ def Kalman():
 
 if __name__ == "__main__":
     centers = [[1, 1], [-1, -1], [1, -1]]     # Generate sample data
-    X, labels_true = make_blobs(n_samples=100, centers=centers, cluster_std=0.1,
+    X, labels_true = make_blobs(n_samples=40, centers=centers, cluster_std=0.12,
                                 random_state=0)
-    # cluster = Cluster(X)
-    # cluster.plot()
-    # print(cluster.get_centers())
-    # plt.show()
+    X = np.around(X,decimals=6)
+    print(list(X[:, 0]))
+    print(list(X[:, 1]))
+    cluster = Cluster(X)
+    cluster.plot()
+    print(cluster.get_centers())
 
     #test moving object
-    _, axs = plt.subplots(1, 1)
-    o = fObject(1,1)
-    o1 = fObject(-1,-1)
-    for i in range(10):
-        grp = X[i*10 : i*10+10]
-        x, y = o.update_pos2closest(grp)
-        axs.scatter(x, y, c="red")
-        x, y = o1.update_pos2closest(grp)
-        axs.scatter(x, y, c="blue")
+    # _, axs = plt.subplots(1, 1)
+    # o = Point(1,1)
+    # o1 = Point(-1,-1)
+    # for i in range(10):
+    #     grp = X[i*10 : i*10+10]
+    #     x, y = o.update_pos2closest(grp)
+    #     axs.scatter(x, y, c="red")
+    #     x, y = o1.update_pos2closest(grp)
+    #     axs.scatter(x, y, c="blue")
+
     plt.show()

@@ -1,13 +1,11 @@
-import classes
+from classes import Point, Cluster
 import serial
-import threading
 import json
-import numpy as np
 import pandas as pd
+import numpy as np
 import time
 import glob
-import pylab
-import string
+import matplotlib.pyplot as plt
 import re
 
 
@@ -50,6 +48,20 @@ def save_data(json_out, lim=150):
 
     return True
 
+def json_process(json_out):
+    data = json_out["frame"]
+    Xs = [i['x'] for i in data]
+    Ys = [i['y'] for i in data]
+    cluster_in = np.column_stack((Xs, Ys))
+    cluster = Cluster(cluster_in)
+    cluster.plot(fig=plt)
+    # plt.scatter(Xs, Ys)
+    plt.pause(0.000001)
+    plt.clf()
+    # grp = []
+    # for pnt in data:
+    #     p = Point(x=pnt['x'], y=pnt['y'])
+    #     grp.append(p)
 
 if __name__ == "__main__":
 
@@ -67,7 +79,9 @@ if __name__ == "__main__":
     ''', re.VERBOSE)
 
     serial_conn = serial.Serial(port=find_serial_port(man="/dev/tty.usbmodem145401"), baudrate = 115200) #SensorTag
-
+    plt.figure()
+    plt.xlim(-5, 5)
+    plt.ylim(-5, 5)
     def read_loop(skip=1): #skip every {skip} values, 1 is no skip
         json_ready = False
         recv_cnt = 0
@@ -92,16 +106,11 @@ if __name__ == "__main__":
                         json_ready = True
                         
                 else:
-                    # tmp_data = data.split('{', 1)[-1]
-                    # tmp_data = '{' + tmp_data
-                    # data = ''.join(tmp_data)
-                    # data = '{s}'.format(s=data)
-                    # data = data.replace('"','\'')
+
                     data = ansi_escape.sub('', data)
 
-                    print(data)
                     json_out = json.loads(data)
-                    print(json_out)
+                    json_process(json_out)
                     # read_data = save_data(json_out)
                     json_ready = False
 

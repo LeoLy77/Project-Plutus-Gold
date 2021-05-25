@@ -34,6 +34,7 @@
 #include "awr_spi.h"
 /* Private define ------------------------------------------------------------*/
 #define STACKSIZE 1024
+#define LED_STACKSIZE 300
 #define TASK_PRIORITY 14
 #define SPI_TASK_PRIORITY 7
 /* Private typedef -----------------------------------------------------------*/
@@ -64,14 +65,27 @@ static void bt_ready(void) {
 	printk("Advertising successfully started\n");
 }
 
+float Xarr[] = {-1.204752, 1.007982, 0.996618, 0.693641, 1.117449, 0.923881, 1.053264, 
+		-0.981406, 1.091325, -1.106534, 1.037568, 1.017285, -1.150335, -1.061158, 0.891124, 
+		-0.852365, -1.041749, 0.902422, 1.103732, 0.804376, -1.107456, 0.987614, 1.211686, 
+		-0.816066, 1.272371, 1.087491, -1.125826, 1.048281, 1.136728, -1.061297, 1.021291, 
+		-1.046479, 1.179289, 0.962614, 0.895504, 1.114011, 1.224107, -1.193668, 0.919305, 1.005491};
+
+float Yarr[] = {-0.765907, -0.963703, -0.9486, 1.078434, 1.268907, -1.043529, 1.040041, 
+		-0.95462, 1.014601, -1.237696, 0.897509, 1.174513, -0.906701, -1.052569, -0.993767, 
+		-0.855714, -0.981238, -1.207154, 0.91094, -0.944466, -0.953572, 1.049272, 1.048019, 
+		-0.823677, 0.825476, -0.984522, -1.170402, -1.082177, -1.148179, -1.141676, -1.048214, 
+		-1.036276, 0.975381, -0.99326, -1.069462, 0.981837, 0.882727, -1.025529, -1.043146, 0.977538};
+
+
 void notify(void) {
 	static uint8_t arr_size = 5U;
 
 	Point pnt_arr[arr_size];
 	for (int i = 0; i < arr_size; i++) {
 
-		pnt_arr[i].x = 0.12345678 + (i + 1);
-		pnt_arr[i].y = 0.87654321 + (i + 3);
+		pnt_arr[i].x = Xarr[i];
+		pnt_arr[i].y = Yarr[i];
 	}
 
 	uint8_t data_size = sizeof(pnt_arr);
@@ -81,7 +95,7 @@ void notify(void) {
 	send_notification(data, data_size);
 	
 	arr_size++;
-	if (arr_size > 30U) {
+	if (arr_size > 40U) {
 		arr_size = 5U;
 	}
 }
@@ -152,12 +166,12 @@ void main(void) {
 	 */
 
 	while (1) {
-		k_sleep(K_SECONDS(2));
+		k_sleep(K_SECONDS(1));
 
 		notify();
 	}
 
 }
 
-K_THREAD_DEFINE(LED_Blink, STACKSIZE, LED_Blink_Task, NULL,NULL,NULL, TASK_PRIORITY, 0, 0);
-K_THREAD_DEFINE(SPI_Receive, STACKSIZE, SPI_Receive_Task, NULL,NULL,NULL, SPI_TASK_PRIORITY, 0, 0);
+K_THREAD_DEFINE(LED_Blink, LED_STACKSIZE, LED_Blink_Task, NULL,NULL,NULL, TASK_PRIORITY, 0, 0);
+// K_THREAD_DEFINE(SPI_Receive, STACKSIZE, SPI_Receive_Task, NULL,NULL,NULL, SPI_TASK_PRIORITY, 0, 0);

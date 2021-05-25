@@ -50,7 +50,7 @@ void LED_Blink_Task(void)
 void SPI_Receive_Task(void) 
 {
 	uint8_t rx_buf[8];
-	uint8_t** rx_buffer;
+	// uint8_t** rx_buffer;
 	uint16_t num_points;
 	uint32_t test;
 
