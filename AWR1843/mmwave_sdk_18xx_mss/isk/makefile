@@ -170,10 +170,10 @@ all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@$(MAKE) --no-print-directory -Onone "xwr18xx_mmw_demo_mss_isk.xer4f"
 
 dependents:
-	-cd C:/Users/jeong/workspace_v10/mmwave_sdk_18xx_dss/isk && $(MAKE) all
+	-cd C:/Users/Jimmy/Desktop/Git/Project/AWR1843/mmwave_sdk_18xx_dss/isk && $(MAKE) clean all
 
 # Tool invocations
-xwr18xx_mmw_demo_mss_isk.xer4f: $(OBJS) $(CMD_SRCS) $(GEN_CMDS) C:/Users/jeong/workspace_v10/mmwave_sdk_18xx_dss/isk/xwr18xx_mmw_demo_dss_isk.xe674
+xwr18xx_mmw_demo_mss_isk.xer4f: $(OBJS) $(CMD_SRCS) $(GEN_CMDS) C:/Users/Jimmy/Desktop/Git/Project/AWR1843/mmwave_sdk_18xx_dss/isk/xwr18xx_mmw_demo_dss_isk.xe674
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: Arm Linker'
 	"C:/ti/ti-cgt-arm_16.9.6.LTS/bin/armcl" -mv7R4 --code_state=16 --float_support=VFPv3D16 -me -O3 --define=SOC_XWR18XX --define=SUBSYS_MSS --define=DOWNLOAD_FROM_CCS --define=MMWAVE_L3RAM_NUM_BANK=6 --define=MMWAVE_SHMEM_TCMA_NUM_BANK=0 --define=MMWAVE_SHMEM_TCMB_NUM_BANK=0 --define=MMWAVE_SHMEM_BANK_SIZE=0x20000 --define=DebugP_ASSERT_ENABLED --define=_LITTLE_ENDIAN --define=OBJDET_NO_RANGE --define=APP_RESOURCE_FILE='<'ti/demo/xwr18xx/mmw/mmw_res.h'>' -g --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --enum_type=int --abi=eabi --obj_extension=.oer4f -z -m"xwr18xx_mmw_demo_mss_isk.map" --heap_size=0x800 --stack_size=0x800 -i"C:/ti/ti-cgt-arm_16.9.6.LTS/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/control/mmwave/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/control/mmwavelink/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/control/dpm/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/adcbuf/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/crc/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/dma/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/edma/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/esm/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/gpio/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/hwa/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/mailbox/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/osal/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/pinmux/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/soc/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/uart/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/spi/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/qspi/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/qspiflash/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/utils/cli/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/utils/mathutils/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/datapath/dpu/rangeproc/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/datapath/dpedma/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/cbuff/lib" -i"C:/ti/mmwave_sdk_03_05_00_04/packages/ti/utils/hsiheader/lib" -i"C:/ti/ti-cgt-arm_16.9.6.LTS/include" --reread_libs --disable_auto_rts --define=MMWAVE_L3RAM_NUM_BANK=6 --define=MMWAVE_SHMEM_TCMA_NUM_BANK=0 --define=MMWAVE_SHMEM_TCMB_NUM_BANK=0 --define=MMWAVE_SHMEM_BANK_SIZE=0x20000 --diag_error=10015 --diag_warning=225 --diag_wrap=off --display_error_number --warn_sections --xml_link_info="xwr18xx_mmw_demo_mss_linkInfo.xml" --rom_model --unused_section_elimination=on -o "xwr18xx_mmw_demo_mss_isk.xer4f" $(ORDERED_OBJS)
@@ -199,16 +199,16 @@ clean:
 	-@echo ' '
 
 post-build:
-	-rm -f C:/Users/jeong/workspace_v10/mmwave_sdk_18xx_mss/xwr18xx_mmw_demo_isk.bin
+	-rm -f C:/Users/Jimmy/Desktop/Git/Project/AWR1843/mmwave_sdk_18xx_mss/xwr18xx_mmw_demo_isk.bin
 	-C:/ti/mmwave_sdk_03_05_00_04/packages/scripts/ImageCreator/out2rprc/out2rprc.exe xwr18xx_mmw_demo_mss_isk.xer4f xwr18xx_mmw_demo_mss_isk.tmp
-	-C:/ti/mmwave_sdk_03_05_00_04/packages/scripts/ImageCreator/multicore_image_generator/MulticoreImageGen.exe LE 37 0x00000008 xwr18xx_mmw_demo_isk.bin 0x35510000 xwr18xx_mmw_demo_mss_isk.tmp 0xb5510000 C:/ti/mmwave_sdk_03_05_00_04/firmware/radarss/xwr18xx_radarss_rprc.bin 0xd5510000 C:/Users/jeong/workspace_v10/mmwave_sdk_18xx_dss/isk/xwr18xx_mmw_demo_dss_isk.bin
+	-C:/ti/mmwave_sdk_03_05_00_04/packages/scripts/ImageCreator/multicore_image_generator/MulticoreImageGen.exe LE 37 0x00000008 xwr18xx_mmw_demo_isk.bin 0x35510000 xwr18xx_mmw_demo_mss_isk.tmp 0xb5510000 C:/ti/mmwave_sdk_03_05_00_04/firmware/radarss/xwr18xx_radarss_rprc.bin 0xd5510000 C:/Users/Jimmy/Desktop/Git/Project/AWR1843/mmwave_sdk_18xx_dss/isk/xwr18xx_mmw_demo_dss_isk.bin
 	-C:/ti/mmwave_sdk_03_05_00_04/packages/scripts/ImageCreator/crc_multicore_image/crc_multicore_image.exe xwr18xx_mmw_demo_isk.bin xwr18xx_mmw_demo_isk.tmp
 	-C:/ti/mmwave_sdk_03_05_00_04/packages/scripts/ImageCreator/append_bin_crc/gen_bincrc32.exe xwr18xx_mmw_demo_isk.bin
 	-@echo ' '
 
 .PHONY: all clean dependents
 .SECONDARY:
-C:/Users/jeong/workspace_v10/mmwave_sdk_18xx_dss/isk/xwr18xx_mmw_demo_dss_isk.xe674:
+C:/Users/Jimmy/Desktop/Git/Project/AWR1843/mmwave_sdk_18xx_dss/isk/xwr18xx_mmw_demo_dss_isk.xe674:
 
 -include ../makefile.targets
 

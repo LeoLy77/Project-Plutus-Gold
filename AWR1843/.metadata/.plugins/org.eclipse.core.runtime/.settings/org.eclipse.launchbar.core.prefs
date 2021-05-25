@@ -1,7 +1,7 @@
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/arch=x86_64
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/name=Local
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/os=win32
-configDescList=org.eclipse.launchbar.core.descriptorType.default\:AWR18xx.ccxml,org.eclipse.launchbar.core.descriptorType.default\:mmwave_sdk_18xx_mss
+configDescList=org.eclipse.launchbar.core.descriptorType.default\:awr1843.ccxml,org.eclipse.launchbar.core.descriptorType.default\:mmwave_sdk_18xx_mss,org.eclipse.launchbar.core.descriptorType.default\:AWR18xx.ccxml
 eclipse.preferences.version=1
 org.eclipse.launchbar.core.descriptorType.default\:AWR18xx.ccxml/activeLaunchMode=debug
 org.eclipse.launchbar.core.descriptorType.default\:AWR18xx.ccxml/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local

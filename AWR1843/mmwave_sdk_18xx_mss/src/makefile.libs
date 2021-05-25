@@ -1,6 +1,6 @@
 #
 # This file was generated based on the configuration script:
-#     C:\Users\jeong\workspace_v10\mmwave_sdk_18xx_mss\mmw_mss.cfg
+#     C:\Users\Jimmy\Desktop\Git\Project\AWR1843\mmwave_sdk_18xx_mss\mmw_mss.cfg
 #
 # This makefile may be included in other makefiles that need to build
 # the libraries containing the compiled source files generated as
@@ -14,7 +14,7 @@
 #
 # The absolute path to the generated source directory (at the time the
 # sources were generated) is:
-#    C:\Users\jeong\workspace_v10\mmwave_sdk_18xx_mss\src
+#    C:\Users\Jimmy\Desktop\Git\Project\AWR1843\mmwave_sdk_18xx_mss\src
 #
 GEN_SRC_DIR ?= ../src
 

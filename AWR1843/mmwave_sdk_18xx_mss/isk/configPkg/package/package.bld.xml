@@ -7,7 +7,7 @@
         <srcFile name="package/cfg/mmw_mss_per4ft.c"/>
     </sources>
     <configscripts>
-        <srcFile name="C:/Users/jeong/workspace_v10/mmwave_sdk_18xx_mss/mmw_mss.cfg"/>
+        <srcFile name="C:/Users/Jimmy/Desktop/Git/Project/AWR1843/mmwave_sdk_18xx_mss/mmw_mss.cfg"/>
     </configscripts>
     <makefiles>
         <srcFile name="package.mak" src="package.bld"/>
@@ -44,7 +44,7 @@
         isPartial="false"
         xCfgScript="package/cfg/mmw_mss_per4ft.cfg"
         xCfgPrefix="package/cfg/mmw_mss_per4ft"
-        cfgScript="C:/Users/jeong/workspace_v10/mmwave_sdk_18xx_mss/mmw_mss.cfg"
+        cfgScript="C:/Users/Jimmy/Desktop/Git/Project/AWR1843/mmwave_sdk_18xx_mss/mmw_mss.cfg"
         cfgArgs="null"
         />
     </configurations>
@@ -56,7 +56,7 @@
         profile="release"
         xCfgScript="package/cfg/mmw_mss_per4ft.cfg"
         xCfgPrefix="package/cfg/mmw_mss_per4ft"
-        cfgScript="C:/Users/jeong/workspace_v10/mmwave_sdk_18xx_mss/mmw_mss.cfg"
+        cfgScript="C:/Users/Jimmy/Desktop/Git/Project/AWR1843/mmwave_sdk_18xx_mss/mmw_mss.cfg"
         cfgArgs="null"
         />
     </executables>

@@ -7,5 +7,5 @@
 #       or equal to the generated config header
 #
 linker.cmd: package/cfg/mmw_dss_pe674.xdl
-	$(SED) 's"^\"\(package/cfg/mmw_dss_pe674cfg.cmd\)\"$""\"C:/Users/jeong/workspace_v10/mmwave_sdk_18xx_dss/isk/configPkg/\1\""' package/cfg/mmw_dss_pe674.xdl > $@
+	$(SED) 's"^\"\(package/cfg/mmw_dss_pe674cfg.cmd\)\"$""\"C:/Users/Jimmy/Desktop/Git/Project/AWR1843/mmwave_sdk_18xx_dss/isk/configPkg/\1\""' package/cfg/mmw_dss_pe674.xdl > $@
 	-$(SETDATE) -r:max package/cfg/mmw_dss_pe674.h compiler.opt compiler.opt.defs

@@ -1941,7 +1941,7 @@ __FAR__ const xdc_SizeT ti_sysbios_utils_Load_Module_State_taskList__O = offseto
  *  Define absolute path prefix for this executable's
  *  configuration generated files.
  */
-xdc__META(__ASM__, "@(#)__ASM__ = C:/Users/jeong/workspace_v10/mmwave_sdk_18xx_mss/isk/configPkg/package/cfg/mmw_mss_per4ft");
+xdc__META(__ASM__, "@(#)__ASM__ = C:/Users/Jimmy/Desktop/Git/Project/AWR1843/mmwave_sdk_18xx_mss/isk/configPkg/package/cfg/mmw_mss_per4ft");
 
 /*
  *  ======== __ISA__ ========

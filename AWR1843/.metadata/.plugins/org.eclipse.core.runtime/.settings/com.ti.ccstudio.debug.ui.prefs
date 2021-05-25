@@ -1,13 +1,14 @@
 MODULES_CODE_OFFSET=
 MODULES_DATA_OFFSET=
-MODULES_MRU_PATH=C\:\\Users\\jeong\\workspace_v10\\mmwave_sdk_18xx_dss\\isk\\xwr18xx_mmw_demo_dss_isk.xe674\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/C674X_0
-MODULES_MRU_PATH.1=C\:\\Users\\jeong\\workspace_v10\\mmwave_sdk_18xx_mss\\isk\\xwr18xx_mmw_demo_mss_isk.xer4f\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/Cortex_R4_0\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/C674X_0
-MODULES_MRU_PATH.2=\#SYM_\#(,)path\=C\:\\Users\\jeong\\workspace_v10\\mmwave_sdk_18xx_dss\\isk\\xwr18xx_mmw_demo_dss_isk.xe674
-MODULES_MRU_PATH.3=C\:\\ti\\mmwave_sdk_03_05_00_04\\packages\\ti\\drivers\\spi\\test\\xwr18xx\\xwr18xx_spi_mss.xer4f\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/Cortex_R4_0
-MODULES_MRU_PATH.4=\#SYM_\#(,)path\=C\:\\ti\\mmwave_sdk_03_05_00_04\\packages\\ti\\drivers\\spi\\test\\xwr18xx\\xwr18xx_spi_mss.xer4f
-MODULES_MRU_PATH.5=\#SYM_\#(,)path\=C\:\\ti\\mmwave_sdk_03_05_00_04\\packages\\ti\\drivers\\uart\\test\\xwr18xx\\xwr18xx_uart_mss.xer4f\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/Cortex_R4_0
-MODULES_MRU_PATH.6=C\:\\ti\\mmwave_sdk_03_05_00_04\\packages\\ti\\drivers\\uart\\test\\xwr18xx\\xwr18xx_uart_dss.xe674\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/C674X_0
-MODULES_MRU_PATH.7=\#SYM_\#(,)path\=C\:\\ti\\mmwave_sdk_03_05_00_04\\packages\\ti\\drivers\\uart\\test\\xwr18xx\\xwr18xx_uart_dss.xe674
-MODULES_MRU_PATH.8=C\:\\ti\\mmwave_sdk_03_05_00_04\\packages\\ti\\drivers\\uart\\test\\xwr18xx\\xwr18xx_uart_mss.xer4f
+MODULES_MRU_PATH=C\:\\Users\\Jimmy\\Desktop\\Git\\Project\\AWR1843\\mmwave_sdk_18xx_dss\\isk\\xwr18xx_mmw_demo_dss_isk.xe674\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/C674X_0
+MODULES_MRU_PATH.1=C\:\\Users\\Jimmy\\Desktop\\Git\\Project\\AWR1843\\mmwave_sdk_18xx_mss\\isk\\xwr18xx_mmw_demo_mss_isk.xer4f\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/Cortex_R4_0
+MODULES_MRU_PATH.2=\#SYM_\#(,)path\=C\:\\Users\\Jimmy\\Desktop\\Git\\Project\\AWR1843\\mmwave_sdk_18xx_mss\\isk\\xwr18xx_mmw_demo_mss_isk.xer4f
+MODULES_MRU_PATH.3=C\:\\Users\\jeong\\workspace_v10\\mmwave_sdk_18xx_dss\\isk\\xwr18xx_mmw_demo_dss_isk.xe674\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/C674X_0
+MODULES_MRU_PATH.4=C\:\\Users\\jeong\\workspace_v10\\mmwave_sdk_18xx_mss\\isk\\xwr18xx_mmw_demo_mss_isk.xer4f\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/Cortex_R4_0\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/C674X_0
+MODULES_MRU_PATH.5=\#SYM_\#(,)path\=C\:\\Users\\jeong\\workspace_v10\\mmwave_sdk_18xx_dss\\isk\\xwr18xx_mmw_demo_dss_isk.xe674
+MODULES_MRU_PATH.6=C\:\\ti\\mmwave_sdk_03_05_00_04\\packages\\ti\\drivers\\spi\\test\\xwr18xx\\xwr18xx_spi_mss.xer4f\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/Cortex_R4_0
+MODULES_MRU_PATH.7=\#SYM_\#(,)path\=C\:\\ti\\mmwave_sdk_03_05_00_04\\packages\\ti\\drivers\\spi\\test\\xwr18xx\\xwr18xx_spi_mss.xer4f
+MODULES_MRU_PATH.8=\#SYM_\#(,)path\=C\:\\ti\\mmwave_sdk_03_05_00_04\\packages\\ti\\drivers\\uart\\test\\xwr18xx\\xwr18xx_uart_mss.xer4f\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/Cortex_R4_0
+MODULES_MRU_PATH.9=C\:\\ti\\mmwave_sdk_03_05_00_04\\packages\\ti\\drivers\\uart\\test\\xwr18xx\\xwr18xx_uart_dss.xe674\#THREAD_IDS\#Texas Instruments XDS110 USB Debug Probe_0/C674X_0
 eclipse.preferences.version=1
 useAnnotationsPrefPage=true

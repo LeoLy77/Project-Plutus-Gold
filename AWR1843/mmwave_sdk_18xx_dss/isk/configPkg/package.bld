@@ -11,7 +11,7 @@ var makeAssembly = false;
 var Executable = xdc.module('xdc.bld.Executable');
 
 var exeOpts = new Executable.Attrs({
-        cfgScript: 'C:/Users/jeong/workspace_v10/mmwave_sdk_18xx_dss/mmw_dss.cfg',
+        cfgScript: 'C:/Users/Jimmy/Desktop/Git/Project/AWR1843/mmwave_sdk_18xx_dss/mmw_dss.cfg',
         profile: 'release',
         cfgHome: 'configPkg',
 });
@@ -41,7 +41,7 @@ else {
 
 var thisObj = {
     cfg:        '../mmw_dss.cfg',
-    outputPath: 'C:/Users/jeong/workspace_v10/mmwave_sdk_18xx_dss/isk/configPkg',
+    outputPath: 'C:/Users/Jimmy/Desktop/Git/Project/AWR1843/mmwave_sdk_18xx_dss/isk/configPkg',
     exeName:    'mmw_dss' + suffix,
     exeIntName: 'mmw_dss' + suffix.replace('.', '_'),
     targ:       targ,

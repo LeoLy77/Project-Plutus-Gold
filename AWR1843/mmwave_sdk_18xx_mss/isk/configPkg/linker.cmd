@@ -9,8 +9,8 @@
  */
 
 
--l"C:\Users\jeong\workspace_v10\mmwave_sdk_18xx_mss\isk\configPkg\package\cfg\mmw_mss_per4ft.oer4ft"
--l"C:\Users\jeong\workspace_v10\mmwave_sdk_18xx_mss\src\sysbios\sysbios.aer4ft"
+-l"C:\Users\Jimmy\Desktop\Git\Project\AWR1843\mmwave_sdk_18xx_mss\isk\configPkg\package\cfg\mmw_mss_per4ft.oer4ft"
+-l"C:\Users\Jimmy\Desktop\Git\Project\AWR1843\mmwave_sdk_18xx_mss\src\sysbios\sysbios.aer4ft"
 -l"C:\ti\bios_6_73_01_01\packages\ti\targets\arm\rtsarm\lib\boot.aer4ft"
 -l"C:\ti\bios_6_73_01_01\packages\ti\targets\arm\rtsarm\lib\auto_init.aer4ft"
 

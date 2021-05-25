@@ -233,16 +233,14 @@ mmw_lvds_stream.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/uart/UAR
 mmw_lvds_stream.oer4f: C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 mmw_lvds_stream.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/dma/dma.h
 mmw_lvds_stream.oer4f: C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h
-mmw_lvds_stream.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/spi/SPI.h
-mmw_lvds_stream.oer4f: C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h
-mmw_lvds_stream.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/osal/SemaphoreP.h
-mmw_lvds_stream.oer4f: C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 mmw_lvds_stream.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/gpio/gpio.h
 mmw_lvds_stream.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/gpio/include/gpio_xwr18xx.h
 mmw_lvds_stream.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/gpio/include/gpio_internal.h
 mmw_lvds_stream.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/gpio/gpio.h
 mmw_lvds_stream.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/gpio/include/reg_gio.h
 mmw_lvds_stream.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/mailbox/mailbox.h
+mmw_lvds_stream.oer4f: C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h
+mmw_lvds_stream.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/osal/SemaphoreP.h
 mmw_lvds_stream.oer4f: C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 mmw_lvds_stream.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/demo/utils/mmwdemo_adcconfig.h
 mmw_lvds_stream.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/demo/utils/mmwdemo_monitor.h
@@ -783,14 +781,6 @@ C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/dma/dma.h:
 
 C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h:
 
-C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/spi/SPI.h:
-
-C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h:
-
-C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/osal/SemaphoreP.h:
-
-C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h:
-
 C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/gpio/gpio.h:
 
 C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/gpio/include/gpio_xwr18xx.h:
@@ -802,6 +792,10 @@ C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/gpio/gpio.h:
 C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/gpio/include/reg_gio.h:
 
 C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/mailbox/mailbox.h:
+
+C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h:
+
+C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/osal/SemaphoreP.h:
 
 C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h:
 

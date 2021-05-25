@@ -270,8 +270,6 @@ mmw_cli.oer4f: C:/ti/bios_6_73_01_01/packages/ti/sysbios/knl/Task.h
 mmw_cli.oer4f: C:/ti/bios_6_73_01_01/packages/ti/sysbios/knl/package/Task_SupportProxy.h
 mmw_cli.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/osal/DebugP.h
 mmw_cli.oer4f: C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h
-mmw_cli.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/spi/SPI.h
-mmw_cli.oer4f: C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h
 mmw_cli.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/gpio/gpio.h
 mmw_cli.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/gpio/include/gpio_xwr18xx.h
 mmw_cli.oer4f: C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/gpio/include/gpio_internal.h
@@ -829,10 +827,6 @@ C:/ti/bios_6_73_01_01/packages/ti/sysbios/knl/Task.h:
 C:/ti/bios_6_73_01_01/packages/ti/sysbios/knl/package/Task_SupportProxy.h:
 
 C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/osal/DebugP.h:
-
-C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h:
-
-C:/ti/mmwave_sdk_03_05_00_04/packages/ti/drivers/spi/SPI.h:
 
 C:/ti/ti-cgt-arm_16.9.6.LTS/include/stddef.h:
 

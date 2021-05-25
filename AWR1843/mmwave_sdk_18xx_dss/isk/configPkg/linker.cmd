@@ -9,8 +9,8 @@
  */
 
 
--l"C:\Users\jeong\workspace_v10\mmwave_sdk_18xx_dss\isk\configPkg\package\cfg\mmw_dss_pe674.oe674"
--l"C:\Users\jeong\workspace_v10\mmwave_sdk_18xx_dss\src\sysbios\sysbios.ae674"
+-l"C:\Users\Jimmy\Desktop\Git\Project\AWR1843\mmwave_sdk_18xx_dss\isk\configPkg\package\cfg\mmw_dss_pe674.oe674"
+-l"C:\Users\Jimmy\Desktop\Git\Project\AWR1843\mmwave_sdk_18xx_dss\src\sysbios\sysbios.ae674"
 -l"C:\ti\bios_6_73_01_01\packages\ti\targets\rts6000\lib\boot.ae674"
 
 --retain="*(xdc.meta)"
