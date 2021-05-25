@@ -31,14 +31,14 @@ class Point:
         return x, y
 
 class Cluster:
-    def __init__(self, X) -> None:
+    def __init__(self, X, eps=0.25, min_samples=2) -> None:
         """
         X = [array(x, y), ...]\n
         @ret: {cl}
         """
         self.X = X
         X_scaled = StandardScaler().fit_transform(X)
-        db = DBSCAN(eps=0.25, min_samples=2).fit(X_scaled) #resolution = 15cm, group of at least 5
+        db = DBSCAN(eps=eps, min_samples=min_samples).fit(X_scaled) #resolution = 15cm, group of at least 5
         labels = db.labels_
         self.n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0) # Number of clusters in labels, ignoring noise if present.
         self.n_noise_ = list(labels).count(-1)
@@ -177,8 +177,8 @@ def Kalman():
         print("Kalman Filter State Matrix:\n", X)
 
 if __name__ == "__main__":
-    centers = [[1, 1], [-1, -1], [1, -1]]     # Generate sample data
-    X, labels_true = make_blobs(n_samples=40, centers=centers, cluster_std=0.12,
+    centers = [[1, 1], [-1, -1], [1, -1], [0, 0]]     # Generate sample data
+    X, labels_true = make_blobs(n_samples=50, centers=centers, cluster_std=0.1,
                                 random_state=0)
     X = np.around(X,decimals=6)
     print(list(X[:, 0]))

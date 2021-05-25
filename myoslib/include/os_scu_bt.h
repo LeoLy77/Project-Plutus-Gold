@@ -29,4 +29,5 @@ extern struct bt_conn_auth_cb scu_auth_cb_display;
 
 int send_notification(uint8_t* data, uint8_t length);
 
+
 #endif

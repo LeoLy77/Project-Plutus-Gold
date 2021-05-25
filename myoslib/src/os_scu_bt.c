@@ -130,7 +130,7 @@ int send_notification(uint8_t* raw_data, uint8_t length) {
 
 		if (err == 0) {
 
-			printk("[SEND] ");
+			printk("[SEND] %d\n", arr_len);
 			// for (int i = 0; i < length; i++) {
 			// 	printk("%X ", data[i]);
 			// }

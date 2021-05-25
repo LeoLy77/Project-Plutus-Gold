@@ -1,7 +1,7 @@
 #include <awr_spi.h>
 
-const struct device *spi_dev;
-static const struct spi_config spi_cfg_master = {
+const struct device *spi_dev2;
+static const struct spi_config spi_cfg_master2 = {
     .operation = SPI_OP_MODE_MASTER | SPI_WORD_SET(8) | SPI_TRANSFER_MSB | SPI_MODE_CPHA,
 	.frequency = 10000000U,
 };
@@ -15,7 +15,7 @@ uint8_t spi_receive(uint8_t* data_buf, uint32_t data_len)
     struct spi_buf_set buf_set = { .buffers = &buf, .count = 1 };
 
 	/* Receive via spi */
-	err = spi_read(spi_dev, &spi_cfg_master, &buf_set);
+	err = spi_read(spi_dev2, &spi_cfg_master2, &buf_set);
 	// err = spi_transceive(spi_dev, &spi_cfg_slave, NULL, &buf_set);
 
 	return err;
@@ -28,7 +28,7 @@ void spi_transmit(uint8_t *data_buf, uint8_t data_len) {
     struct spi_buf buf = { .buf = data_buf, .len = data_len };
     struct spi_buf_set buf_set = { .buffers = &buf, .count = 1 };
 
-	err = spi_write(spi_dev, &spi_cfg_master, &buf_set);
+	err = spi_write(spi_dev2, &spi_cfg_master2, &buf_set);
     return;
 }
 
@@ -54,8 +54,8 @@ void SPI_Receive_Task(void)
 	uint16_t num_points;
 	uint32_t test;
 
-	spi_dev = device_get_binding("SPI_3");
-	if (spi_dev == NULL) {
+	spi_dev2 = device_get_binding("SPI_3");
+	if (spi_dev2 == NULL) {
 		printk("SPI could not be initialised");
     } else {
 		printk("SPI has successfully initialised");
@@ -84,10 +84,15 @@ void SPI_Receive_Task(void)
 			points[i].y = *((float*)&test);
 		}	
 
-		for (uint8_t i = 0; i < num_points; i++)
-		{
-			printk("(%.6f, %.6f)\n", points[i].x, points[i].y);
-		}
+		uint8_t data_size = sizeof(points);
+		uint8_t data[data_size];
+		memcpy(data, &points, sizeof(points));
+		send_notification(data, num_points);
+
+		// for (uint8_t i = 0; i < num_points; i++)
+		// {
+		// 	printk("(%.6f, %.6f)\n", points[i].x, points[i].y);
+		// }
 
 	}
 }
