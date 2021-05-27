@@ -53,12 +53,14 @@ def json_process(json_out):
     Xs = [i['x'] for i in data]
     Ys = [i['y'] for i in data]
     cluster_in = np.column_stack((Xs, Ys))
-    cluster = Cluster(cluster_in, eps=0.25, min_samples=2)
+    cluster = Cluster(cluster_in, eps=0.25, min_samples=3)
     cluster.plot(fig=plt)
     # plt.scatter(Xs, Ys)
-    plt.pause(0.00000001)
     plt.xlim(-10, 10)
-    plt.ylim(-10, 10)
+    plt.ylim(-0.9, 18)
+    # plt.set_xbound(lower=xmin, upper=xmax)
+    # plt.set_ybound(lower=ymin, upper=ymax)
+    plt.pause(0.00000001)
     plt.clf()
     # grp = []
     # for pnt in data:
@@ -80,7 +82,7 @@ if __name__ == "__main__":
         )
     ''', re.VERBOSE)
 
-    serial_conn = serial.Serial(port=find_serial_port(man="/dev/tty.usbmodem146101"), baudrate = 115200) #SensorTag
+    serial_conn = serial.Serial(port=find_serial_port(man=""), baudrate = 115200) #SensorTag
     plt.figure()
     def read_loop(skip=1): #skip every {skip} values, 1 is no skip
         json_ready = False
@@ -100,7 +102,7 @@ if __name__ == "__main__":
                 tmp_data = data.strip()
 
                 data = ''.join(tmp_data)
-                print(data)
+                # print(data)
                 if not json_ready:
                     if "[JS_GUD]" in data:
                         json_ready = True

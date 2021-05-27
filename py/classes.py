@@ -88,7 +88,12 @@ class Cluster:
         unique_labels = set(self.labels)
         colors = [fig.cm.Spectral(each)
                 for each in np.linspace(0, 1, len(unique_labels))]
-        for k, col in zip(unique_labels, colors):
+
+        coor = self.get_centers()
+        for c in coor:
+            fig.annotate("(%.3f, %.3f)" % (c[0], c[-1]), xy=c)
+
+        for i, k, col in zip(range(len(colors)), unique_labels, colors):
             if k == -1:
                 # Black used for noise.
                 col = [0, 0, 0, 1]
@@ -96,14 +101,19 @@ class Cluster:
             class_member_mask = (self.labels == k)
 
             xy = self.X[class_member_mask & core_samples_mask]
-            fig.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
-                    markeredgecolor='k', markersize=14)
+            if k == -1:
+                fig.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
+                    markeredgecolor='k', markersize=14, label="Noise")
+            else:
+                fig.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
+                        markeredgecolor='k', markersize=14, label="Obj %d (%.3f, %.3f)" % (k, coor[i][0], coor[i][-1]))
 
             xy = self.X[class_member_mask & ~core_samples_mask]
             fig.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
                     markeredgecolor='k', markersize=6)
 
-        fig.title('Estimated number of clusters: %d' % self.n_clusters_)
+        fig.title('Estimated number of clusters: %d' % self.n_clusters_, fontsize=30)
+        fig.legend(loc=3, bbox_to_anchor=(-0.12, -0.15))
 
 def Kalman():
     x_observations = np.array([4000, 4260, 4550, 4860, 5110])
