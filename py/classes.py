@@ -112,7 +112,7 @@ class Cluster:
             fig.plot(xy[:, 0], xy[:, 1], 'o', markerfacecolor=tuple(col),
                     markeredgecolor='k', markersize=6)
 
-        fig.title('Estimated number of clusters: %d' % self.n_clusters_, fontsize=30)
+        fig.title('Estimated number of occupants: %d' % self.n_clusters_, fontsize=30)
         fig.legend(loc=3, bbox_to_anchor=(-0.12, -0.15))
 
 def Kalman():

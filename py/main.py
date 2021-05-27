@@ -53,7 +53,7 @@ def json_process(json_out):
     Xs = [i['x'] for i in data]
     Ys = [i['y'] for i in data]
     cluster_in = np.column_stack((Xs, Ys))
-    cluster = Cluster(cluster_in, eps=0.25, min_samples=3)
+    cluster = Cluster(cluster_in, eps=0.35, min_samples=3)
     cluster.plot(fig=plt)
     # plt.scatter(Xs, Ys)
     plt.xlim(-10, 10)
